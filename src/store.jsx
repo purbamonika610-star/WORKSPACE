@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { buildSeedProjects, DEFAULT_STRATEGIES, uid } from './seed.js';
+import { buildSeedProjects, buildThesisProject, DEFAULT_STRATEGIES, uid } from './seed.js';
 import { makeT, tx } from './i18n.js';
 
 const KEY = 'monika-workspace-v1';
@@ -8,8 +8,9 @@ export function initialState() {
   return {
     version: 1,
     lang: 'id',
-    projects: buildSeedProjects(),
-    events: [],
+    projects: [...buildSeedProjects(), buildThesisProject()],
+    migrations: ['interview-2026-11-24', 'thesis-project'],
+    events: [{ id: uid('e'), interviewLumi: true, title: '🎯 Interview PA – Lumi Advertising', date: '2026-11-24', time: '', endTime: '', reminder: '', category: 'career', notes: '', isDeadline: true, updatedAt: Date.now() }],
     activity: [{ id: uid('a'), ts: Date.now(), text: { en: 'Workspace created with your 4 projects', id: 'Workspace dibuat dengan 4 project kamu' } }],
     deletedGcal: [],
     content: { brand: 'elevara', ideas: [], rejected: [], posts: [], trends: {}, metrics: [] },
@@ -31,10 +32,29 @@ function load() {
     if (raw) {
       const s = JSON.parse(raw);
       const base = initialState();
-      return { ...base, ...s, settings: { ...base.settings, ...s.settings }, content: { ...base.content, ...s.content } };
+      return migrate({ ...base, ...s, migrations: s.migrations || [], settings: { ...base.settings, ...s.settings }, content: { ...base.content, ...s.content } });
     }
   } catch { /* ignore */ }
   return initialState();
+}
+
+// One-time updates applied to data already saved in the browser.
+function migrate(st) {
+  const done = new Set(st.migrations);
+  if (!done.has('interview-2026-11-24')) {
+    const career = st.projects.find((p) => p.id === 'career');
+    const sec = career?.sections[0];
+    sec?.tasks.forEach((t) => { if (t.status !== 'done') Object.assign(t, { deadline: '2026-11-23', priority: 'high', updatedAt: Date.now() }); });
+    if (!st.events.some((e) => e.interviewLumi)) {
+      st.events.push({ id: uid('e'), interviewLumi: true, title: '🎯 Interview PA – Lumi Advertising', date: '2026-11-24', time: '', endTime: '', reminder: '', category: 'career', notes: '', isDeadline: true, updatedAt: Date.now() });
+    }
+    st.migrations.push('interview-2026-11-24');
+  }
+  if (!done.has('thesis-project')) {
+    if (!st.projects.some((p) => p.id === 'thesis')) st.projects.push(buildThesisProject());
+    st.migrations.push('thesis-project');
+  }
+  return st;
 }
 
 const Ctx = createContext(null);

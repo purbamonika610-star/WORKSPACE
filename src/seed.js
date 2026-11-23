@@ -41,15 +41,15 @@ export function buildSeedProjects() {
       sections: [
         s(['Interview preparation', 'Persiapan interview'], [
           t(['Prepare for Lumi Advertising PA interview', 'Persiapan interview PA Lumi Advertising'], {
-            priority: 'high', deadline: inDays(3), status: 'doing',
+            priority: 'high', deadline: inDays(0), status: 'doing',
             subtasks: sub(['Review job description', 'Prepare "tell me about yourself"', 'Prepare 3 questions to ask', 'Plan outfit & setup (camera, mic, internet)']),
           }),
           t(['Research Alvina Global Partners and Lumi Advertising', 'Riset Alvina Global Partners dan Lumi Advertising'], {
-            priority: 'high', deadline: inDays(2),
+            priority: 'high', deadline: inDays(0),
             subtasks: sub(['Company history & services', 'Key clients & recent campaigns', 'Founders / leadership', 'Culture & values']),
           }),
           t(['Practice interview questions', 'Latihan pertanyaan interview'], {
-            priority: 'high', deadline: inDays(3),
+            priority: 'high', deadline: inDays(0),
             subtasks: sub(['Common PA questions', 'Behavioural (STAR) answers', 'Mock interview recording']),
           }),
         ]),
@@ -209,12 +209,68 @@ export function buildSeedProjects() {
   ];
 }
 
+
+export function buildThesisProject() {
+  return {
+    id: 'thesis',
+    key: 'E',
+    category: 'study',
+    name: { en: 'University & Thesis (UNPAB)', id: 'Kuliah & Skripsi (UNPAB)' },
+    description: {
+      en: 'From title approval to thesis defense, one chapter at a time.',
+      id: 'Dari pengajuan judul sampai sidang, satu bab demi satu bab.',
+    },
+    notes: '',
+    sections: [
+      s(['Administration & supervision', 'Administrasi & bimbingan'], [
+        t(['Consult thesis title with supervisor', 'Konsultasi judul dengan dosen pembimbing'], { priority: 'high' }),
+        t(['Submit title & get supervisor decree (SK)', 'Ajukan judul & urus SK pembimbing'], { priority: 'high' }),
+        t(['Set a regular supervision schedule', 'Atur jadwal bimbingan rutin']),
+      ]),
+      s(['Chapter 1: Introduction', 'Bab 1: Pendahuluan'], [
+        t(['Background of the study', 'Latar belakang masalah']),
+        t(['Problem identification & formulation', 'Identifikasi & rumusan masalah']),
+        t(['Objectives & benefits of the research', 'Tujuan & manfaat penelitian']),
+      ]),
+      s(['Chapter 2: Literature review', 'Bab 2: Tinjauan pustaka'], [
+        t(['Collect 20+ journals & references (Mendeley)', 'Kumpulkan 20+ jurnal & referensi (Mendeley)'], { subtasks: sub(['National journals (SINTA)', 'International journals', 'Textbooks']) }),
+        t(['Theoretical framework', 'Landasan teori']),
+        t(['Previous studies table', 'Tabel penelitian terdahulu']),
+        t(['Conceptual framework & hypotheses', 'Kerangka konseptual & hipotesis']),
+      ]),
+      s(['Chapter 3: Methodology', 'Bab 3: Metodologi penelitian'], [
+        t(['Research type, location & time', 'Jenis, lokasi & waktu penelitian']),
+        t(['Population & sample', 'Populasi & sampel']),
+        t(['Variables & questionnaire / instrument', 'Variabel & kuesioner / instrumen']),
+        t(['Data analysis technique (SPSS)', 'Teknik analisis data (SPSS)']),
+      ]),
+      s(['Proposal seminar', 'Seminar proposal'], [
+        t(['Prepare proposal slides', 'Siapkan slide seminar proposal']),
+        t(['Revise after the proposal seminar', 'Revisi setelah seminar proposal']),
+      ]),
+      s(['Chapters 4–5: Results & conclusion', 'Bab 4–5: Hasil & kesimpulan'], [
+        t(['Collect data / distribute questionnaire', 'Kumpulkan data / sebar kuesioner']),
+        t(['Process data in SPSS (validity, reliability, tests)', 'Olah data di SPSS (validitas, reliabilitas, uji)']),
+        t(['Write results & discussion', 'Tulis hasil & pembahasan']),
+        t(['Conclusion & recommendations', 'Kesimpulan & saran']),
+      ]),
+      s(['Thesis defense', 'Sidang skripsi'], [
+        t(['Abstract (ID & EN) and references', 'Abstrak (ID & EN) dan daftar pustaka']),
+        t(['Plagiarism check (Turnitin)', 'Cek plagiarisme (Turnitin)']),
+        t(['Defense slides & practice presentation', 'Slide sidang & latihan presentasi']),
+        t(['Final revision & binding', 'Revisi akhir & jilid']),
+      ]),
+    ],
+  };
+}
+
 // Calendar categories. Each color has one meaning.
 export const CATEGORIES = [
   { id: 'career', color: '#5B8DEF', bg: '#EAF1FE', name: { en: 'Career', id: 'Karier' } },
   { id: 'elevara', color: '#8B6FE0', bg: '#F1ECFD', name: { en: 'Elevara', id: 'Elevara' } },
   { id: 'sister', color: '#E8935A', bg: '#FDF0E6', name: { en: "Sister's business", id: 'Bisnis kakak/adik' } },
   { id: 'personal', color: '#E46FA4', bg: '#FCEBF3', name: { en: 'Personal brand', id: 'Personal brand' } },
+  { id: 'study', color: '#9C6B30', bg: '#F5ECE0', name: { en: 'University', id: 'Kuliah' } },
   { id: 'content', color: '#3FB28A', bg: '#E5F6EF', name: { en: 'Content & editing', id: 'Konten & editing' } },
   { id: 'meeting', color: '#2AA5B8', bg: '#E2F4F7', name: { en: 'Meeting / call', id: 'Meeting / telepon' } },
   { id: 'deadline', color: '#E05D5D', bg: '#FCEAEA', name: { en: 'Deadline', id: 'Deadline' } },

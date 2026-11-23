@@ -3,6 +3,7 @@ import { Volume2, Eye, RotateCcw, Check, Shuffle, ChevronDown, ChevronUp, Target
 import { INTERVIEW, ALL_QUESTIONS } from './interview.js';
 import { useStore } from './store.jsx';
 import { Modal } from './ui.jsx';
+import { Recorder } from './Recorder.jsx';
 
 export function speak(text) {
   try {
@@ -139,11 +140,12 @@ export function PracticeModal({ scope, onClose }) {
           {!terms && <div className="muted tiny">{card.section}</div>}
           <div className="flash-q">{!terms && <span className="qa-id">{card.id.toUpperCase()}</span>}{card.q}</div>
           <button className="btn ghost sm" onClick={() => speak(card.q)}><Volume2 size={14} /> {lang === 'en' ? 'Hear the question' : 'Dengar pertanyaannya'}</button>
+          {!terms && <Recorder key={card.id} card={card} onChecked={() => setShow(true)} />}
           {!show ? (
             <>
               <p className="muted small" style={{ textAlign: 'center', maxWidth: 480 }}>
                 {terms ? (lang === 'en' ? 'Say the meaning out loud, then check.' : 'Sebutkan artinya dengan suara keras, lalu cek.')
-                  : (lang === 'en' ? 'Answer out loud in your own words (about 1 minute), then check the key points.' : 'Jawab dengan suara keras pakai kata-katamu sendiri (±1 menit), lalu cek poin pentingnya.')}
+                  : (lang === 'en' ? 'Press Record and answer out loud in your own words (about 1 minute). Then press Check, or just show the answer.' : 'Tekan Rekam dan jawab dengan suara keras pakai kata-katamu sendiri (±1 menit). Lalu tekan Cek jawabanku, atau langsung lihat jawaban.')}
               </p>
               <button className="btn black" onClick={() => setShow(true)}><Eye size={15} /> {lang === 'en' ? 'Show answer' : 'Lihat jawaban'}</button>
             </>

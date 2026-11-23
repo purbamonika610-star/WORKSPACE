@@ -226,3 +226,23 @@ export const EVERGREEN_TRENDS = [
   { name: 'Save-worthy checklists', what: 'Single-slide or carousel checklists.', why_now: 'Easy to save = longer life in the algorithm.', how_to_use: 'Turn any service into a 7-point checklist.', format: 'Carousel', heat: 3 },
   { name: 'Story polls & question stickers', what: 'Interactive Stories that start DMs.', why_now: 'DMs are where clients convert.', how_to_use: 'Ask a yes/no question about their biggest struggle, reply to every vote.', format: 'Story', heat: 3 },
 ];
+
+const IV_SCHEMA = {
+  type: 'object',
+  additionalProperties: false,
+  properties: {
+    score: { type: 'integer', description: '1-10' },
+    verdict: { type: 'string', enum: ['ready', 'almost', 'practice'] },
+    covered: { type: 'array', items: { type: 'string' } },
+    missing: { type: 'array', items: { type: 'string' } },
+    tips: { type: 'array', items: { type: 'string' } },
+    better: { type: 'string', description: 'Her answer rewritten slightly better, keeping her own words and length' },
+  },
+  required: ['score', 'verdict', 'covered', 'missing', 'tips', 'better'],
+};
+
+export async function aiInterviewFeedback({ apiKey, question, meaning, keys, sample, transcript }) {
+  const system = `You are a friendly, honest interview coach. Monika is an Indonesian candidate practising spoken English for a Personal Assistant interview (Zoom) tomorrow. Her answer comes from speech-to-text, so ignore missing punctuation and small transcription errors. Judge content, structure, clarity and confidence, not perfect grammar. Write "tips" (max 4, short, practical) in simple Bahasa Indonesia. "covered" and "missing" list the key points (short, in English). "better" is her answer improved in natural spoken English, about the same length, keeping her own facts. Never invent experience she did not mention.`;
+  const user = `Question: ${question}\nWhat the interviewer wants: ${meaning}\nKey points:\n${keys.map((k) => `- ${k}`).join('\n')}\n\nReference answer (for context only, she should not memorise it word for word):\n${sample}\n\nHer spoken answer (transcript):\n${transcript}`;
+  return callClaude(apiKey, system, user, IV_SCHEMA);
+}

@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { buildSeedProjects, buildThesisProject, DEFAULT_STRATEGIES, uid } from './seed.js';
+import { buildInterviewTasks, buildSeedProjects, buildThesisProject, DEFAULT_STRATEGIES, uid } from './seed.js';
 import { makeT, tx } from './i18n.js';
 
 const KEY = 'monika-workspace-v1';
@@ -9,8 +9,9 @@ export function initialState() {
     version: 1,
     lang: 'id',
     projects: [...buildSeedProjects(), buildThesisProject()],
-    migrations: ['interview-2026-11-24', 'thesis-project'],
-    events: [{ id: uid('e'), interviewLumi: true, title: '🎯 Interview PA – Lumi Advertising', date: '2026-11-24', time: '', endTime: '', reminder: '', category: 'career', notes: '', isDeadline: true, updatedAt: Date.now() }],
+    migrations: ['interview-2026-11-24', 'thesis-project', 'interview-pdf'],
+    practice: {},
+    events: [{ id: uid('e'), interviewLumi: true, title: '🎯 Interview PA – Lumi Advertising (Zoom)', date: '2026-11-24', time: '10:15', endTime: '11:00', reminder: '60', category: 'career', notes: 'Zoom · 30–45 min · Alvina Global Partners', isDeadline: true, updatedAt: Date.now() }],
     activity: [{ id: uid('a'), ts: Date.now(), text: { en: 'Workspace created with your 4 projects', id: 'Workspace dibuat dengan 4 project kamu' } }],
     deletedGcal: [],
     content: { brand: 'elevara', ideas: [], rejected: [], posts: [], trends: {}, metrics: [] },
@@ -46,13 +47,28 @@ function migrate(st) {
     const sec = career?.sections[0];
     sec?.tasks.forEach((t) => { if (t.status !== 'done') Object.assign(t, { deadline: '2026-11-23', priority: 'high', updatedAt: Date.now() }); });
     if (!st.events.some((e) => e.interviewLumi)) {
-      st.events.push({ id: uid('e'), interviewLumi: true, title: '🎯 Interview PA – Lumi Advertising', date: '2026-11-24', time: '', endTime: '', reminder: '', category: 'career', notes: '', isDeadline: true, updatedAt: Date.now() });
+      st.events.push({ id: uid('e'), interviewLumi: true, title: '🎯 Interview PA – Lumi Advertising (Zoom)', date: '2026-11-24', time: '10:15', endTime: '11:00', reminder: '60', category: 'career', notes: 'Zoom · 30–45 min · Alvina Global Partners', isDeadline: true, updatedAt: Date.now() });
     }
     st.migrations.push('interview-2026-11-24');
   }
   if (!done.has('thesis-project')) {
     if (!st.projects.some((p) => p.id === 'thesis')) st.projects.push(buildThesisProject());
     st.migrations.push('thesis-project');
+  }
+  if (!done.has('interview-pdf')) {
+    const career = st.projects.find((p) => p.id === 'career');
+    const sec = career?.sections[0];
+    if (sec) {
+      const keep = sec.tasks.filter((t) => /Alvina/i.test(typeof t.title === 'string' ? t.title : t.title.en));
+      sec.tasks.filter((t) => !keep.includes(t) && t.gcalId).forEach((t) => st.deletedGcal.push(t.gcalId));
+      keep.forEach((t) => Object.assign(t, { deadline: '2026-11-24', updatedAt: Date.now() }));
+      sec.name = { en: 'Interview preparation · Lumi Advertising', id: 'Persiapan interview · Lumi Advertising' };
+      sec.tasks = [...buildInterviewTasks(), ...keep];
+    }
+    const ev = st.events.find((e) => e.interviewLumi);
+    if (ev) Object.assign(ev, { title: '🎯 Interview PA – Lumi Advertising (Zoom)', time: '10:15', endTime: '11:00', reminder: '60', notes: 'Zoom · 30–45 min · Alvina Global Partners', updatedAt: Date.now() });
+    st.practice = st.practice || {};
+    st.migrations.push('interview-pdf');
   }
   return st;
 }

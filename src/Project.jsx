@@ -3,6 +3,8 @@ import { CheckCircle2, Circle, Clock, ListChecks, MoreHorizontal, Plus, StickyNo
 import { projectProgress, relDay, daysUntil, useStore, allTasks } from './store.jsx';
 import { tx } from './i18n.js';
 import { Bar, catOf, Modal, Pill, PRIORITY, ReminderSelect, Ring, STATUS } from './ui.jsx';
+import { InterviewGuide, PracticeModal } from './Interview.jsx';
+import { Target } from 'lucide-react';
 
 const nextStatus = { todo: 'doing', doing: 'done', done: 'todo' };
 
@@ -38,6 +40,7 @@ export function ProjectView({ projectId, openTask }) {
   const [newTitle, setNewTitle] = useState('');
   const [newSection, setNewSection] = useState('');
   const [menu, setMenu] = useState(null);
+  const [practice, setPractice] = useState(null);
   if (!p) return null;
   const c = catOf(p.category);
   const tasks = p.sections.flatMap((s) => s.tasks);
@@ -57,8 +60,12 @@ export function ProjectView({ projectId, openTask }) {
               <Pill key={s} {...STATUS[s]}>{t(s)} · {tasks.filter((x) => x.status === s).length}</Pill>
             ))}
           </div>
+          {p.id === 'career' && (
+            <button className="btn black" style={{ marginTop: 12 }} onClick={() => setPractice('all')}><Target size={15} /> {lang === 'en' ? 'Practice interview (flashcards)' : 'Latihan interview (flashcard)'}</button>
+          )}
         </div>
       </div>
+      {practice && <PracticeModal scope={practice} onClose={() => setPractice(null)} />}
 
       <div className="toolbar">
         <div className="seg">
@@ -153,6 +160,7 @@ export function TaskDrawer({ taskId, onClose }) {
   const { state, api, t, lang } = useStore();
   const hit = allTasks(state).find((x) => x.task.id === taskId);
   const [sub, setSub] = useState('');
+  const [practice, setPractice] = useState(null);
   if (!hit) return null;
   const { task, project, section } = hit;
   const set = (patch) => api.updateTask(task.id, patch);
@@ -163,8 +171,10 @@ export function TaskDrawer({ taskId, onClose }) {
     set({ subtasks, status });
   };
   return (
-    <Modal title={`${tx(project.name, lang)} · ${tx(section.name, lang)}`} onClose={onClose}>
+    <>
+    <Modal title={`${tx(project.name, lang)} · ${tx(section.name, lang)}`} onClose={onClose} wide={!!task.guide}>
       <input className="title-input" value={tx(task.title, lang)} onChange={(e) => set({ title: e.target.value })} />
+      {task.guide && <InterviewGuide guide={task.guide} onPractice={setPractice} />}
       <div className="form-grid">
         <label>{t('status')}
           <div className="seg full">
@@ -205,5 +215,7 @@ export function TaskDrawer({ taskId, onClose }) {
         <button className="btn primary" onClick={onClose}>{t('close')}</button>
       </div>
     </Modal>
+    {practice && <PracticeModal scope={practice} onClose={() => setPractice(null)} />}
+    </>
   );
 }

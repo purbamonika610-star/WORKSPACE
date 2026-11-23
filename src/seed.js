@@ -1,3 +1,4 @@
+import { INTERVIEW } from './interview.js';
 // Starting data for MONIKA WORKSPACE. Titles are [English, Indonesian] pairs.
 let n = 0;
 const uid = (p = 'id') => `${p}_${Date.now().toString(36)}_${(n++).toString(36)}${Math.random().toString(36).slice(2, 6)}`;
@@ -26,6 +27,33 @@ const inDays = (d) => {
   return x.toISOString().slice(0, 10);
 };
 
+
+// Interview tasks built from Monika's Lumi Advertising preparation document.
+export function buildInterviewTasks() {
+  const D = INTERVIEW.date;
+  const tasks = [
+    t(['Interview overview: date, time, Zoom & focus areas', 'Ringkasan interview: tanggal, jam, Zoom & fokus'], { priority: 'high', deadline: D, guide: { type: 'overview' } }),
+  ];
+  for (const sec of INTERVIEW.sections) {
+    tasks.push(t([`Practice ${sec.title} (${sec.items.map((i) => i.id.toUpperCase()).join(', ')})`, `Latihan ${sec.titleId} (${sec.items.map((i) => i.id.toUpperCase()).join(', ')})`], {
+      priority: 'high', deadline: D, guide: { type: 'qa', section: sec.id },
+      subtasks: sec.items.map((i) => ({ id: uid('st'), qid: i.id, title: `${i.id.toUpperCase()}: ${i.q}`, done: false })),
+    }));
+  }
+  tasks.push(
+    t(['Quick knowledge revision: 13 key terms', 'Revisi cepat: 13 istilah penting'], { priority: 'high', deadline: D, guide: { type: 'glossary' } }),
+    t(['Choose 3 questions to ask the interviewer', 'Pilih 3 pertanyaan untuk interviewer'], {
+      priority: 'high', deadline: D, guide: { type: 'ask' },
+      subtasks: INTERVIEW.askThem.map((q) => ({ id: uid('st'), title: q, done: false })),
+    }),
+    t(['Final practice checklist (before Zoom)', 'Checklist terakhir (sebelum Zoom)'], {
+      priority: 'high', deadline: D, time: '09:45', reminder: '10', guide: { type: 'checklist' },
+      subtasks: INTERVIEW.checklist.map((q) => ({ id: uid('st'), title: q, done: false })),
+    }),
+  );
+  return tasks;
+}
+
 export function buildSeedProjects() {
   return [
     {
@@ -39,18 +67,11 @@ export function buildSeedProjects() {
       },
       notes: '',
       sections: [
-        s(['Interview preparation', 'Persiapan interview'], [
-          t(['Prepare for Lumi Advertising PA interview', 'Persiapan interview PA Lumi Advertising'], {
-            priority: 'high', deadline: inDays(0), status: 'doing',
-            subtasks: sub(['Review job description', 'Prepare "tell me about yourself"', 'Prepare 3 questions to ask', 'Plan outfit & setup (camera, mic, internet)']),
-          }),
+        s(['Interview preparation · Lumi Advertising', 'Persiapan interview · Lumi Advertising'], [
+          ...buildInterviewTasks(),
           t(['Research Alvina Global Partners and Lumi Advertising', 'Riset Alvina Global Partners dan Lumi Advertising'], {
-            priority: 'high', deadline: inDays(0),
+            priority: 'high', deadline: INTERVIEW.date,
             subtasks: sub(['Company history & services', 'Key clients & recent campaigns', 'Founders / leadership', 'Culture & values']),
-          }),
-          t(['Practice interview questions', 'Latihan pertanyaan interview'], {
-            priority: 'high', deadline: inDays(0),
-            subtasks: sub(['Common PA questions', 'Behavioural (STAR) answers', 'Mock interview recording']),
           }),
         ]),
         s(['Sales & marketing skills', 'Skill sales & marketing'], [

@@ -570,3 +570,13 @@ main { background: #fff; }
 .fb-list.ok li { color: #1E8A5F; }
 .fb-list.miss li { color: #C2397F; }
 .fb-list:not(.ok):not(.miss) ul { padding-left: 18px; list-style: disc; }
+
+/* ---------- company research ---------- */
+.co-card { background: #fff; border-radius: 14px; padding: 14px 16px; }
+.co-card h4 { margin-bottom: 8px; }
+.co-facts { display: flex; flex-direction: column; gap: 6px; }
+.co-facts > div { display: grid; grid-template-columns: 170px 1fr; gap: 10px; font-size: 13.5px; line-height: 1.5; }
+.co-facts b { color: var(--ink); }
+.co-steps, .co-list { margin: 0 0 8px; padding-left: 20px; font-size: 13.5px; line-height: 1.6; }
+.co-say { display: flex; gap: 8px; align-items: flex-start; justify-content: space-between; background: #F4F0FF; border-radius: 12px; padding: 10px 12px; font-size: 13.5px; line-height: 1.5; margin-bottom: 6px; }
+@media (max-width: 860px) { .co-facts > div { grid-template-columns: 1fr; gap: 0; } }

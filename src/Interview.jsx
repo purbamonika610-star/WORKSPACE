@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Volume2, Eye, RotateCcw, Check, Shuffle, ChevronDown, ChevronUp, Target, Clock, Video, Lightbulb } from 'lucide-react';
-import { INTERVIEW, ALL_QUESTIONS } from './interview.js';
+import { INTERVIEW, ALL_QUESTIONS, COMPANY } from './interview.js';
 import { useStore } from './store.jsx';
 import { Modal } from './ui.jsx';
 import { Recorder } from './Recorder.jsx';
@@ -84,6 +84,54 @@ export function InterviewGuide({ guide, onPractice }) {
           ))}
         </div>
         <button className="btn black full" onClick={() => onPractice('terms')}><Target size={15} /> {lang === 'en' ? 'Quiz me on the terms' : 'Kuis istilah'}</button>
+      </div>
+    );
+  }
+  if (guide.type === 'company') {
+    const L = COMPANY.lumi; const A = COMPANY.alvina;
+    const Facts = ({ rows }) => <div className="co-facts">{rows.map(([k, v]) => <div key={k}><b>{k}</b><span>{v}</span></div>)}</div>;
+    return (
+      <div className="guide">
+        <div className="co-card">
+          <h4 style={{ marginTop: 0 }}>🏢 {L.name}</h4>
+          <p className="muted small" style={{ margin: '0 0 8px' }}>{L.tagline}</p>
+          <Facts rows={L.facts} />
+        </div>
+        <div className="co-card">
+          <h4 style={{ marginTop: 0 }}>{lang === 'en' ? 'Their 5 services' : '5 layanan mereka'}</h4>
+          <Facts rows={L.services} />
+        </div>
+        <div className="co-card">
+          <h4 style={{ marginTop: 0 }}>{lang === 'en' ? 'How it works: lead → appointment' : 'Cara kerja: lead → appointment'}</h4>
+          <ol className="co-steps">{L.process.map((x) => <li key={x}>{x}</li>)}</ol>
+          <div className="tip-box"><Lightbulb size={16} /><span>{lang === 'en' ? 'The PA role likely sits in steps 3–5: calling/chatting with leads, qualifying them, booking calls, writing handovers and updating the CRM. That matches your prepared answers on client communication, follow-ups and CRM.' : 'Posisi PA kemungkinan besar ada di langkah 3–5: menghubungi lead, mengecek kecocokan, mengatur jadwal call, menulis handover, dan update CRM. Ini pas sekali dengan jawaban yang sudah kamu siapkan soal komunikasi klien, follow-up, dan CRM.'}</span></div>
+        </div>
+        <div className="co-card">
+          <h4 style={{ marginTop: 0 }}>{lang === 'en' ? 'Their values' : 'Nilai-nilai mereka'}</h4>
+          <ul className="co-list">{L.values.map((x) => <li key={x}>{x}</li>)}</ul>
+        </div>
+        <div className="co-card">
+          <h4 style={{ marginTop: 0 }}>🤝 {A.name}</h4>
+          <Facts rows={A.facts} />
+          <ul className="co-list" style={{ marginTop: 8 }}>{COMPANY.link.map((x) => <li key={x}>{x}</li>)}</ul>
+        </div>
+        <div className="co-card">
+          <h4 style={{ marginTop: 0 }}>💬 {lang === 'en' ? 'Say this in the interview' : 'Kalimat yang bisa kamu pakai'}</h4>
+          {COMPANY.talking.map((x) => (
+            <div key={x} className="co-say"><span>“{x}”</span><button className="icon-btn" onClick={() => speak(x)}><Volume2 size={14} /></button></div>
+          ))}
+        </div>
+        <div className="co-card">
+          <h4 style={{ marginTop: 0 }}>❓ {lang === 'en' ? 'Smart questions about the role' : 'Pertanyaan pintar soal posisinya'}</h4>
+          {COMPANY.askMore.map((x) => (
+            <div key={x} className="co-say"><span>{x}</span><button className="icon-btn" onClick={() => speak(x)}><Volume2 size={14} /></button></div>
+          ))}
+        </div>
+        <div className="co-card">
+          <h4 style={{ marginTop: 0 }}>📚 {lang === 'en' ? 'Property & lead-gen terms' : 'Istilah properti & lead-gen'}</h4>
+          <div className="gloss">{COMPANY.terms.map(([k, v]) => <div key={k} className="gl-row"><b>{k}</b><span>{v}</span><button className="icon-btn" onClick={() => speak(k)}><Volume2 size={14} /></button></div>)}</div>
+        </div>
+        <p className="tiny muted" style={{ margin: 0 }}>{lang === 'en' ? 'Sources' : 'Sumber'}: {COMPANY.sources.join(' · ')}</p>
       </div>
     );
   }

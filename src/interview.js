@@ -190,3 +190,75 @@ export const INTERVIEW = {
 };
 
 export const ALL_QUESTIONS = INTERVIEW.sections.flatMap((s) => s.items.map((it) => ({ ...it, section: s.title, sectionId: s.id })));
+
+// Company research (from lumiadvertising.com and Alvina Global Partners' public Instagram, checked 23 Nov 2026).
+export const COMPANY = {
+  lumi: {
+    name: 'Lumi Advertising',
+    tagline: '“Less chasing leads. More property conversations.”',
+    facts: [
+      ['Apa itu', 'Agensi marketing & lead generation khusus untuk agen properti (real estate) di Singapura.'],
+      ['Founder', 'Fyrus Atan (Founder, Sales & Marketing). Kemungkinan besar dia yang akan kamu ajak kerja langsung.'],
+      ['Berdiri', 'Terdaftar di Singapura pada 28 Jan 2025, jadi masih bisnis muda yang sedang berkembang.'],
+      ['Klien', 'Agen properti Singapura: peluncuran kondominium baru (new launch), post-launch, HDB MOP & asset progression.'],
+      ['Janji utama', 'Bukan cuma kasih “leads”, tapi appointment yang sudah dikualifikasi (qualified appointments).'],
+    ],
+    services: [
+      ['Meta ads management', 'Iklan Facebook & Instagram untuk tiap proyek/niche properti.'],
+      ['Video editing & graphic design', 'Konten iklan dibuat terus supaya selalu segar.'],
+      ['WhatsApp automation', 'Pesan otomatis cepat ke lead baru (speed-to-lead) dan follow-up otomatis.'],
+      ['PA appointment setter', 'Orang sungguhan yang menelepon & chat lead, cek apakah cocok, lalu atur jadwal call dengan agen. ⭐ Ini sangat mungkin bagian dari pekerjaanmu.'],
+      ['Weekly nurturing & reactivation', 'Tetap kontak dengan prospek, dan hubungi lagi lead yang sudah “diam”.'],
+    ],
+    process: [
+      'Iklan Meta jalan, lalu calon pembeli mengisi form (lead masuk).',
+      'WhatsApp otomatis langsung menyapa lead.',
+      'PA menghubungi lead: tanya minat properti, budget, timeline, dan apakah untuk tinggal sendiri atau investasi.',
+      'Kalau cocok, PA atur jadwal call, lalu kirim “handover” ke WhatsApp agen: jam call, minat properti, dan catatan percakapan.',
+      'Lead yang belum siap tetap di-follow-up setiap minggu (nurturing) dan dicatat di CRM / dashboard.',
+    ],
+    values: [
+      'Jujur: mereka tidak menjanjikan garansi appointment atau penjualan.',
+      'Kontrak standar 90 hari untuk tes kampanye dan membangun pipeline.',
+      'Transparan: klien bisa lihat live dashboard.',
+      'Rapi: handover selalu lengkap dengan konteks.',
+    ],
+  },
+  alvina: {
+    name: 'Alvina Global Partners',
+    facts: [
+      ['Apa itu', 'Agensi “Business & Talent” yang menghubungkan bisnis internasional dengan talenta remote dari Indonesia.'],
+      ['Founder', 'Alvina. Dulu namanya “Alvina Virtual Assistant”, lalu rebranding jadi Alvina Global Partners (Sep 2026).'],
+      ['Peran di interview ini', 'Mereka recruiter / perantara. Lumi Advertising adalah klien yang mencari PA. Alvina yang mengatur interview.'],
+      ['Visi', '“Same passion, bigger purpose”: connecting the right people with the right opportunities, beyond borders.'],
+    ],
+  },
+  link: [
+    'Lumi butuh PA, lalu Alvina mencarikan talenta Indonesia yang cocok, yaitu kamu.',
+    'Kamu akan bekerja remote untuk Lumi (Singapura). Zona waktunya sama dengan Bali, jadi ini kelebihan untukmu!',
+    'Bersikap profesional ke keduanya: Alvina menilai apakah kamu layak direkomendasikan, Lumi menilai apakah kamu cocok untuk tim.',
+  ],
+  talking: [
+    'I looked at Lumi’s website. I really like that you focus on qualified appointments, not just leads, and that you keep the follow-up moving for agents while they’re with clients.',
+    'I understand that speed-to-lead and consistent follow-up are very important. I’m organised and responsive, so I can help make sure no lead gets lost.',
+    'I noticed you don’t promise guaranteed results. I appreciate that honesty, and I think clear communication builds long-term trust with agents.',
+    'Since Bali is in the same time zone as Singapore, I can be available during your working hours and respond quickly.',
+  ],
+  askMore: [
+    'Will the PA role include calling and qualifying leads as an appointment setter, or more admin and CRM support for the team?',
+    'Which CRM or dashboard do you use to track leads and handovers?',
+    'How many agents or campaigns would I support at the start?',
+    'What does a successful first 90 days look like for this role?',
+  ],
+  terms: [
+    ['Speed-to-lead', 'Seberapa cepat lead baru dihubungi. Makin cepat, makin besar peluangnya.'],
+    ['Qualified appointment', 'Janji call dengan prospek yang sudah dicek benar-benar tertarik dan cocok.'],
+    ['Handover', 'Info lengkap prospek yang dikirim ke agen sebelum call.'],
+    ['Nurturing / reactivation', 'Menjaga hubungan dengan lead yang belum siap, dan menghubungi lagi lead yang diam.'],
+    ['New launch', 'Proyek kondominium baru yang baru dijual.'],
+    ['HDB MOP', 'Minimum Occupation Period: pemilik rumah HDB (rumah subsidi) sudah boleh menjual, biasanya setelah 5 tahun.'],
+    ['Asset progression', 'Upgrade properti, misalnya dari HDB ke kondominium untuk investasi.'],
+    ['EC', 'Executive Condominium: kondominium hybrid dengan subsidi pemerintah.'],
+  ],
+  sources: ['lumiadvertising.com', 'Instagram @alvinaglobalpartners', 'LinkedIn Fyrus Atan'],
+};

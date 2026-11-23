@@ -1,4 +1,6 @@
 import { INTERVIEW } from './interview.js';
+
+export const COMPANY_SUBS = () => sub(['Read: what Lumi Advertising does & its 5 services', 'Understand the lead → appointment process (PA role!)', 'Read: who Alvina Global Partners is', 'Memorise 2 talking points about Lumi', 'Learn 8 property terms (speed-to-lead, HDB MOP...)']);
 // Starting data for MONIKA WORKSPACE. Titles are [English, Indonesian] pairs.
 let n = 0;
 const uid = (p = 'id') => `${p}_${Date.now().toString(36)}_${(n++).toString(36)}${Math.random().toString(36).slice(2, 6)}`;
@@ -70,8 +72,8 @@ export function buildSeedProjects() {
         s(['Interview preparation · Lumi Advertising', 'Persiapan interview · Lumi Advertising'], [
           ...buildInterviewTasks(),
           t(['Research Alvina Global Partners and Lumi Advertising', 'Riset Alvina Global Partners dan Lumi Advertising'], {
-            priority: 'high', deadline: INTERVIEW.date,
-            subtasks: sub(['Company history & services', 'Key clients & recent campaigns', 'Founders / leadership', 'Culture & values']),
+            priority: 'high', deadline: INTERVIEW.date, guide: { type: 'company' },
+            subtasks: COMPANY_SUBS(),
           }),
         ]),
         s(['Sales & marketing skills', 'Skill sales & marketing'], [

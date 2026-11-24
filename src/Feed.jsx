@@ -6,6 +6,7 @@ import {
 import { fmtDate, todayStr, useStore } from './store.jsx';
 import { imgUrl } from './imgdb.js';
 import { Modal } from './ui.jsx';
+import { IgPostStatus, useIg } from './Instagram.jsx';
 
 // Calm, premium palettes. Each post keeps one palette for all its slides.
 export const PALETTES = [
@@ -82,6 +83,8 @@ function Tile({ post, idx, handle, onOpen, drag }) {
   const pal = palFor(post);
   const today = todayStr();
   const { lang } = useStore();
+  const ig = useIg();
+  const live = ig.published?.[post.id]?.state === 'published';
   const multi = (post.images?.length || post.carousel?.slides?.length || 0) > 1;
   return (
     <div className={`ig-tile${drag.dragId === post.id ? ' dragging' : ''}`} draggable
@@ -89,6 +92,7 @@ function Tile({ post, idx, handle, onOpen, drag }) {
       onDragOver={(e) => e.preventDefault()} onDrop={() => { drag.swap(drag.dragId, post.id); drag.setDragId(null); }}
       onClick={() => onOpen(post.id, idx)}>
       {post.images?.length ? <Img k={post.images[0]} className="ig-img" /> : <SlideArt post={post} i={0} pal={pal} handle={handle} />}
+      {live && <span className="ig-live">✓ Live</span>}
       {post.postDate && <span className={`ig-badge${post.postDate <= today ? ' past' : ''}`}>{fmtDate(post.postDate, lang)}</span>}
       {multi && <span className="ig-multi"><svg viewBox="0 0 24 24" width="16" height="16"><path fill="#fff" d="M8 3h11a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm-4 4v12a2 2 0 0 0 2 2h12v-2H6V7H4Z" /></svg></span>}
       <div className="ig-hover"><Heart size={15} fill="#fff" /> {likesFor(post)} <MessageCircle size={15} fill="#fff" /> {Math.round(likesFor(post) / 9)}</div>
@@ -384,6 +388,7 @@ function IGPost({ post, idx, handle, prof, onBack, onPrev, onNext, onEdit }) {
           </div>
         )}
 
+        <div style={{ padding: '0 12px' }}><IgPostStatus post={post} lang={lang} /></div>
         <div className="igp-foot">
           <button className="btn sm" disabled={!onPrev} onClick={onPrev}><ChevronLeft size={14} /> {en ? 'Newer' : 'Lebih baru'}</button>
           <button className="btn sm primary" onClick={onEdit}><Pencil size={14} /> {en ? 'Edit post' : 'Edit post'}</button>

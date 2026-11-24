@@ -1,3 +1,4 @@
+import { IgCard } from './Instagram.jsx';
 import { useRef, useState } from 'react';
 import { Download, Upload, RotateCcw, CalendarCheck, Sparkles, Globe, Megaphone, Bell, Smartphone, Copy, Link2 } from 'lucide-react';
 import { initialState, useStore } from './store.jsx';
@@ -88,6 +89,7 @@ export default function Settings({ google, cloud }) {
       </section>
 
       {cloud && <CloudCard cloud={cloud} lang={lang} />}
+      {cloud && <IgCard key={cloud.cfg?.code || 'off'} lang={lang} />}
 
       <section className="card">
         <h2><CalendarCheck size={17} /> {t('googleSection')}</h2>

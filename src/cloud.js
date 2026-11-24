@@ -36,9 +36,28 @@ export const validCode = (c) => /^mw-[0-9a-f-]{38,}$/i.test((c || '').trim());
 // Keep secrets out of the cloud copy.
 export function toCloud(state) {
   const { anthropicKey, ...settings } = state.settings || {}; // eslint-disable-line no-unused-vars
+  try { settings.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone; } catch { /* */ }
   return { ...state, settings };
 }
 
 export const cloudMeta = async (code) => (await rpc('ws_meta', { p_code: code }))[0] || null;
 export const cloudGet = async (code) => (await rpc('ws_get', { p_code: code }))[0] || null;
 export const cloudPut = (code, state) => rpc('ws_put', { p_code: code, p_data: toCloud(state), p_device: deviceName() });
+
+// Instagram auto-posting (Supabase Edge Function `ig`, token kept server-side).
+const FN = 'https://zfajirhhydijbaakdipm.supabase.co/functions/v1/ig';
+export const igStatus = (code) => rpc('ws_ig_status', { p_code: code });
+export async function igAction(code, action, extra = {}) {
+  const res = await fetch(FN, { method: 'POST', headers: { apikey: KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ code, action, ...extra }) });
+  const j = await res.json().catch(() => ({}));
+  if (!res.ok || j.error) throw new Error(j.error || `Error ${res.status}`);
+  return j;
+}
+export async function igUpload(code, postId, idx, blob) {
+  const f = new FormData();
+  f.append('code', code); f.append('post_id', postId); f.append('idx', String(idx)); f.append('file', blob, `${idx}.jpg`);
+  const res = await fetch(FN, { method: 'POST', headers: { apikey: KEY }, body: f });
+  const j = await res.json().catch(() => ({}));
+  if (!res.ok || j.error) throw new Error(j.error || `Upload ${res.status}`);
+  return j.url;
+}

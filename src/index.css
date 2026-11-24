@@ -710,3 +710,11 @@ main { background: #fff; }
 .ig-badge.past { background: rgba(17,17,17,.72); color: #fff; }
 .month-seg { flex-wrap: wrap; }
 .month-seg button { flex: 1 1 auto; }
+
+.ig-st { display: flex; align-items: center; gap: 7px; margin-top: 10px; font-size: 12.5px; padding: 8px 11px; border-radius: 10px; background: #F4F2FA; color: #5B3FC4; }
+.ig-st.ok { background: #E4F5EC; color: #1F7A50; }
+.ig-st.bad { background: #FCEBF3; color: #B0306E; }
+.ig-st.muted { background: #F6F7FA; color: var(--muted); }
+.ig-st a { margin-left: auto; font-weight: 700; color: inherit; }
+.ig-st svg { flex: none; }
+.ig-live { position: absolute; top: 6px; left: 6px; background: #1F7A50; color: #fff; font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 99px; z-index: 1; }

@@ -7,6 +7,7 @@ import { delImg, imgUrl, putImg } from './imgdb.js';
 import { Modal, Pill } from './ui.jsx';
 import SocialHub from './Social.jsx';
 import Feed, { SlideArt, palFor } from './Feed.jsx';
+import { IgPostStatus, useIgAutoPrepare } from './Instagram.jsx';
 
 const BRANDS = {
   elevara: { name: 'Elevara', handle: 'elevara.agency', cat: 'elevara' },
@@ -87,6 +88,7 @@ export default function Content() {
   const hasKey = !!settings.anthropicKey;
   const ideas = state.content.ideas.filter((i) => i.brand === brand);
   const posts = state.content.posts.filter((p) => p.brand === brand);
+  useIgAutoPrepare(state.content.posts, api);
   const autoFilled = useRef({});
 
   const avoidList = () => {
@@ -355,6 +357,7 @@ Reply with ONLY this JSON, no other text:
           <div className="seg full">
             {STATUSES.map(([id, key, col, bg]) => <button key={id} className={post.status === id ? 'on' : ''} style={post.status === id ? { color: col, background: bg } : {}} onClick={() => set((p) => { p.status = id; })}>{t(key)}</button>)}
           </div>
+          <IgPostStatus post={post} lang={lang} />
         </div>
 
         <div className="post-right">

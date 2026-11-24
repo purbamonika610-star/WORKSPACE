@@ -246,6 +246,11 @@ function Shell() {
 
   const openDay = (date, isNew) => { setCalTarget({ date, isNew, k: Date.now() }); go('calendar'); };
   const go = (v) => { setView(v); localStorage.setItem('mw-view', v); setNavOpen(false); window.scrollTo(0, 0); };
+  useEffect(() => {
+    const h = (e) => go(e.detail);
+    window.addEventListener('mw-go', h);
+    return () => window.removeEventListener('mw-go', h);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const nav = [
     ['dashboard', LayoutDashboard, t('dashboard')],
     ['projects', FolderKanban, t('projects')],

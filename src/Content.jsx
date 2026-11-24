@@ -78,7 +78,7 @@ function ImgThumb({ k, className, alt = '' }) {
 export default function Content() {
   const { state, api, t, lang } = useStore();
   const [tab, setTab] = useState('hub');
-  const [openPost, setOpenPost] = useState(null);
+  const [openPost, setOpenPost] = useState(() => { try { const v = sessionStorage.getItem('mw-open-post'); sessionStorage.removeItem('mw-open-post'); return v; } catch { return null; } });
   const [busy, run] = useAsync();
   const [err, setErr] = useState('');
   const [feedback, setFeedback] = useState('');

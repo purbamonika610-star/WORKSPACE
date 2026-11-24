@@ -1,10 +1,50 @@
 import { useState } from 'react';
 import { CheckCircle2, Circle, Clock, ListChecks, MoreHorizontal, Plus, StickyNote, Trash2, Search } from 'lucide-react';
-import { projectProgress, relDay, daysUntil, useStore, allTasks } from './store.jsx';
+import { projectProgress, relDay, daysUntil, useStore, allTasks, fmtDate } from './store.jsx';
 import { tx } from './i18n.js';
 import { Bar, catOf, Modal, Pill, PRIORITY, ReminderSelect, Ring, STATUS } from './ui.jsx';
 import { InterviewGuide, PracticeModal } from './Interview.jsx';
-import { Target } from 'lucide-react';
+import { Target, Palette, Send } from 'lucide-react';
+import { useIg } from './Instagram.jsx';
+
+const POST_ST = {
+  draft: ['Script', 'Script', '#8B6FE0', '#F1ECFD'],
+  design: ['Designing', 'Desain', '#C98A1B', '#FBF3E0'],
+  ready: ['Ready', 'Siap', '#4C7EE8', '#EAF1FE'],
+  posted: ['Posted', 'Terbit', '#2F9E6A', '#E4F5EC'],
+};
+const openPostInContent = (id) => {
+  try { sessionStorage.setItem('mw-open-post', id); } catch { /* */ }
+  window.dispatchEvent(new CustomEvent('mw-go', { detail: 'content' }));
+};
+
+function CarouselRows({ lang }) {
+  const { state, t } = useStore();
+  const ig = useIg();
+  const en = lang === 'en';
+  const posts = state.content.posts.filter((p) => p.brand === 'elevara').sort((a, b) => (a.postDate || '').localeCompare(b.postDate || ''));
+  if (!posts.length) return <li className="muted small" style={{ padding: '10px 4px' }}>{en ? 'Pick topics in Social Media → Topic ideas. They appear here as carousel tasks.' : 'Pilih topik di Social Media → Ide topik. Topiknya muncul di sini sebagai tugas carousel.'}</li>;
+  return posts.map((p) => {
+    const live = ig.published?.[p.id]?.state === 'published';
+    const st = live ? POST_ST.posted : POST_ST[p.status] || POST_ST.draft;
+    const done = live || p.status === 'posted' || p.status === 'ready';
+    const d = p.designDate ? daysUntil(p.designDate) : null;
+    return (
+      <li key={p.id} className={`task-row${live || p.status === 'posted' ? ' is-done' : ''}`} onClick={() => openPostInContent(p.id)}>
+        <button className="check" tabIndex={-1}>{done ? <CheckCircle2 size={20} color="#2F9E6A" /> : <Circle size={20} />}</button>
+        <div className="grow">
+          <div className="row-title">{p.topic?.title}</div>
+          <div className="row-meta">
+            {!done && p.designDate && <span className={`due ${d < 0 ? 'late' : d <= 2 ? 'soon' : ''}`}><Palette size={12} /> {en ? 'Design' : 'Desain'} {relDay(p.designDate, t)}</span>}
+            <span><Send size={12} /> {en ? 'Post' : 'Posting'} {fmtDate(p.postDate, lang, { weekday: 'short', day: 'numeric', month: 'short' })} {p.postTime}</span>
+            <span>{(p.images?.length || 0)}/{p.carousel?.slides?.length || 5} slide</span>
+          </div>
+        </div>
+        <Pill color={st[2]} bg={st[3]}>{live ? '✓ Live' : en ? st[0] : st[1]}</Pill>
+      </li>
+    );
+  });
+}
 
 const nextStatus = { todo: 'doing', doing: 'done', done: 'todo' };
 
@@ -80,12 +120,16 @@ export function ProjectView({ projectId, openTask }) {
         <div className="sections">
           {p.sections.map((sec) => {
             const list = sec.tasks.filter(match);
-            const sp = sec.tasks.length ? sec.tasks.filter((x) => x.status === 'done').length / sec.tasks.length : 0;
+            const carousels = sec.live === 'carousels' ? state.content.posts.filter((x) => x.brand === 'elevara') : [];
+            const cDone = carousels.filter((x) => x.status === 'ready' || x.status === 'posted').length;
+            const total = sec.tasks.length + carousels.length;
+            const doneN = sec.tasks.filter((x) => x.status === 'done').length + cDone;
+            const sp = total ? doneN / total : 0;
             return (
               <section className="card section" key={sec.id}>
                 <div className="section-head">
                   <input className="section-title" value={tx(sec.name, lang)} onChange={(e) => api.renameSection(p.id, sec.id, e.target.value)} />
-                  <span className="muted small">{sec.tasks.filter((x) => x.status === 'done').length}/{sec.tasks.length}</span>
+                  <span className="muted small">{doneN}/{total}</span>
                   <div className="menu-wrap">
                     <button className="icon-btn" onClick={() => setMenu(menu === sec.id ? null : sec.id)}><MoreHorizontal size={16} /></button>
                     {menu === sec.id && (
@@ -95,6 +139,7 @@ export function ProjectView({ projectId, openTask }) {
                 </div>
                 <Bar value={sp} color={c.color} />
                 <ul className="tasks">
+                  {sec.live === 'carousels' && filter !== 'done' && filter !== 'doing' && !q && <CarouselRows lang={lang} />}
                   {list.map((task) => <TaskRow key={task.id} task={task} onOpen={openTask} />)}
                 </ul>
                 {adding === sec.id ? (

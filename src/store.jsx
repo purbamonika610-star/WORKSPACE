@@ -114,6 +114,18 @@ function migrate(st) {
     if (st.content) st.content.brand = 'elevara';
     st.migrations.push('focus-elevara');
   }
+  if (!done.has('ig-section-live')) {
+    // The Instagram section now lists the chosen carousel topics live from Social Media.
+    for (const pr of st.projects || []) {
+      for (const sec of pr.sections || []) {
+        const n = typeof sec.name === 'string' ? sec.name : sec.name?.en || '';
+        if (!/^Instagram/i.test(n)) continue;
+        sec.live = 'carousels';
+        sec.tasks = sec.tasks.filter((t) => !/carousel/i.test(typeof t.title === 'string' ? t.title : t.title?.en || ''));
+      }
+    }
+    st.migrations.push('ig-section-live');
+  }
   if (!st.settings.googleClientId) st.settings.googleClientId = GOOGLE_CLIENT_ID;
   return st;
 }

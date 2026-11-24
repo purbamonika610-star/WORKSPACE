@@ -301,14 +301,25 @@ export const CATEGORIES = [
   { id: 'google', color: '#8A94A6', bg: '#EFF1F5', name: { en: 'From Google', id: 'Dari Google' } },
 ];
 
-export const DEFAULT_STRATEGIES = {
-  elevara: `BRAND: Elevara — an agency offering Business Support, Creative Services and Academic Services.
-AUDIENCE: Small business owners, startups and solo founders (international, English-speaking) who need reliable support; university students who need academic help (editing, formatting, presentations).
+export const ELEVARA_STRATEGY_V2 = `BRAND: Elevara — a virtual assistant and social media management agency for small businesses.
+AUDIENCE: Small business owners, startups and solo founders (international, English-speaking) who are stuck in admin and have no time to show up on social media.
 CONTENT PILLARS (rotate):
- 1. Business Support (30%) — admin, lead generation, CRM, client communication, operations tips.
- 2. Creative Services (30%) — carousels, Reels, content calendars, branding, websites.
- 3. Academic Services (20%) — study systems, presentations, research & writing help.
- 4. How Elevara works / behind the scenes / trust (20%) — process, team, results, FAQs.
+ 1. Virtual Assistant (40%) — inbox & scheduling, lead follow-up, CRM, delegation, saving time.
+ 2. Social Media (40%) — content planning, carousels, Reels, Stories, Instagram profile, consistency.
+ 3. How Elevara works / behind the scenes / trust (20%) — process, team, results, FAQs.
+TONE: Professional, warm, clear and confident. Short sentences. No jargon. Helpful first, salesy last.
+CAROUSEL STRUCTURE (5 slides): 1) Hook that names the audience's problem  2–4) Three creative, practical solutions, one per slide  5) CTA that shows exactly what problem Elevara solves.
+CTA OPTIONS: "DM us ELEVARA", "Book a free call — link in bio", "Save this for later", "Share with a founder friend".
+VISUAL STYLE (designed manually in Canva by Monika): clean, white space, soft brand colors, max ~25 words per slide.
+POSTING: 3x per week (carousel focus), captions 80–150 words with a hook line, value, CTA and 5–8 hashtags.`;
+
+export const DEFAULT_STRATEGIES = {
+  elevara: `BRAND: Elevara — a virtual assistant and social media management agency for small businesses.
+AUDIENCE: Small business owners, startups and solo founders (international, English-speaking) who are stuck in admin and have no time to show up on social media.
+CONTENT PILLARS (rotate):
+ 1. Virtual Assistant (40%) — inbox & scheduling, lead follow-up, CRM, delegation, saving time.
+ 2. Social Media (40%) — content planning, carousels, Reels, Stories, Instagram profile, consistency.
+ 3. How Elevara works / behind the scenes / trust (20%) — process, team, results, FAQs.
 TONE: Professional, warm, clear and confident. Short sentences. No jargon. Helpful first, salesy last.
 CAROUSEL STRUCTURE (5 slides): 1) Hook that names the audience's problem  2–4) Three creative, practical solutions, one per slide  5) CTA that shows exactly what problem Elevara solves.
 CTA OPTIONS: "DM us ELEVARA", "Book a free call — link in bio", "Save this for later", "Share with a founder friend".

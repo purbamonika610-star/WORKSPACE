@@ -111,48 +111,6 @@ Then write the full caption (hook line, value, CTA), a list of 5–8 hashtags (w
 }
 
 // ---------------- Template fallback (no API key) ----------------
-const BANK = {
-  elevara: [
-    ['5 admin tasks every founder should outsource first', 'You\'re losing 10 hours a week to tasks someone else could do.', 'Business Support'],
-    ['How to follow up with leads without sounding pushy', 'Most deals are lost after the first message, not before it.', 'Business Support'],
-    ['A simple CRM setup for small businesses', 'If your leads live in your DMs, you\'re losing money.', 'Business Support'],
-    ['The lead generation routine that takes 30 minutes a day', '30 minutes a day = a full pipeline in 30 days.', 'Business Support'],
-    ['Cold email template that actually gets replies', 'Your cold email is getting deleted in 3 seconds. Here\'s why.', 'Business Support'],
-    ['Signs your business needs a virtual assistant', 'Still answering every email yourself? Read this.', 'Business Support'],
-    ['What makes a carousel get saved (not just liked)', 'Likes feel good. Saves grow your account.', 'Creative Services'],
-    ['How to plan a month of content in one afternoon', 'Never wonder "what should I post today?" again.', 'Creative Services'],
-    ['Reels editing mistakes that kill your views', 'Your Reel loses people in the first 2 seconds.', 'Creative Services'],
-    ['Brand consistency checklist for Instagram', 'Would people recognise your post without your logo?', 'Creative Services'],
-    ['What a website homepage needs above the fold', 'Visitors decide in 5 seconds whether to stay.', 'Creative Services'],
-    ['Content pillars explained for busy business owners', 'Posting randomly is why your content feels hard.', 'Creative Services'],
-    ['How to structure a strong university presentation', 'A great presentation is built before you open the slides.', 'Academic Services'],
-    ['Study system for students who work part-time', 'Less time, better grades: it\'s about the system.', 'Academic Services'],
-    ['How to format a thesis without losing your mind', 'Formatting shouldn\'t take longer than writing.', 'Academic Services'],
-    ['Research tips: finding credible sources fast', 'Stop scrolling page 5 of Google for sources.', 'Academic Services'],
-    ['Meet Elevara: who we are and how we help', 'One team for your business, creative and academic needs.', 'How Elevara works'],
-    ['How working with Elevara works, step by step', 'From first message to finished project in 4 simple steps.', 'How Elevara works'],
-    ['Behind the scenes: how we design a carousel', 'Every slide you see started as a messy sketch.', 'How Elevara works'],
-    ['FAQ: what clients ask before working with us', 'The 6 questions everyone asks before hiring us.', 'How Elevara works'],
-    ['Before & after: a client\'s Instagram glow-up', 'Same business. Same products. Different results.', 'How Elevara works'],
-  ],
-  sister: [
-    ['Meet our best-seller', 'The one everyone orders twice.', 'Products & menu'],
-    ['Behind the scenes: how we make it fresh every morning', 'Our day starts at 5 AM. Here\'s why.', 'Behind the scenes'],
-    ['3 reasons locals keep coming back', 'Not just tourists love us 😉', 'Customer moments'],
-    ['How to find us in Bali', 'Save this for your next Bali trip.', 'Bali lifestyle'],
-    ['This week\'s promo', 'Bring a friend, get a little treat.', 'Promos'],
-    ['New on the menu', 'You asked. We made it.', 'Products & menu'],
-    ['Our story: why we started', 'It began in a tiny kitchen.', 'Behind the scenes'],
-  ],
-  personal: [
-    ['What I learned preparing for a remote job interview', 'I almost cancelled this interview. Glad I didn\'t.', 'Career growth'],
-    ['My simple weekly planning system', 'I stopped keeping everything in my head. Here\'s how.', 'Productivity'],
-    ['Building an agency from Bali: month 1', 'Starting a business is messier than Instagram shows.', 'Building a business'],
-    ['Remote work skills that actually got me noticed', 'It wasn\'t my CV that stood out.', 'Career growth'],
-    ['A day in my life working remotely in Bali', 'Not every day is beach and laptop.', 'Lifestyle'],
-    ['How I stay consistent with content', 'Consistency isn\'t motivation. It\'s a system.', 'Productivity'],
-  ],
-};
 
 const PLAN5 = ['Read the 5-slide script and adjust any words to your voice (10 min)', 'Design the 5 slides manually in Canva (45–60 min)', 'Review the caption & hashtags the day before', 'Post at your usual time and reply to every comment in the first hour', 'Share slide 1 to Stories with a poll or question sticker'];
 

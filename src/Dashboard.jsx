@@ -80,7 +80,8 @@ export default function Dashboard({ openTask, go, openDay }) {
   const nowStr = new Date().toTimeString().slice(0, 5);
 
   const weekEnd = addDays(today, 7);
-  const postsWeek = state.content.posts.filter((p) => p.postDate >= today && p.postDate <= weekEnd);
+  const activeB = state.settings.activeBrands?.length ? state.settings.activeBrands : ['elevara'];
+  const postsWeek = state.content.posts.filter((p) => activeB.includes(p.brand) && p.postDate >= today && p.postDate <= weekEnd);
   const ideasWaiting = state.content.ideas.length;
   const dueWeek = open.filter((x) => x.task.deadline && x.task.deadline <= weekEnd);
   const overdue = open.filter((x) => x.task.deadline && x.task.deadline < today);

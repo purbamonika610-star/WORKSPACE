@@ -100,7 +100,8 @@ export default function Content() {
   const [busy, run] = useAsync();
   const [err, setErr] = useState('');
   const [feedback, setFeedback] = useState('');
-  const brand = state.content.brand;
+  const active = state.settings.activeBrands?.length ? state.settings.activeBrands : ['elevara'];
+  const brand = active.includes(state.content.brand) ? state.content.brand : active[0];
   const settings = state.settings;
   const hasKey = !!settings.anthropicKey;
   const ideas = state.content.ideas.filter((i) => i.brand === brand);
@@ -196,11 +197,12 @@ export default function Content() {
           <h1>{t('contentInbox')}</h1>
           <p className="muted">{hasKey ? <><Sparkles size={13} /> {t('aiMode')} · Claude</> : t('templateMode')}</p>
         </div>
-        <div className="seg">
-          {Object.keys(BRANDS).map((b) => (
+        {active.length > 1 && <div className="seg">
+          {active.map((b) => (
             <button key={b} className={brand === b ? 'on' : ''} onClick={() => api.update((s) => { s.content.brand = b; return s; })}>{bname(b, lang)}</button>
           ))}
-        </div>
+        </div>}
+        {active.length === 1 && <span className="black-pill">{bname(brand, lang)}</span>}
       </header>
 
       <div className="tabs">

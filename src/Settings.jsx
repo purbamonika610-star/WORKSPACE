@@ -130,6 +130,22 @@ export default function Settings({ google, cloud }) {
           ? <>Get one at <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noreferrer">console.anthropic.com</a> (pay-as-you-go; one topic list + one full carousel costs roughly US$0.05–0.10).</>
           : <>Buat di <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noreferrer">console.anthropic.com</a> (bayar sesuai pemakaian; satu daftar topik + satu carousel lengkap kira-kira US$0,05–0,10).</>}</p>
 
+        <label className="lbl" style={{ marginTop: 12 }}>{lang === 'en' ? 'Brands shown in Social Media' : 'Brand yang tampil di Social Media'}</label>
+        <div className="row-gap" style={{ flexWrap: 'wrap' }}>
+          {[['elevara', 'Elevara'], ['sister', lang === 'en' ? 'Sister’s business' : 'Bisnis Kakak/Adik'], ['personal', 'Personal brand']].map(([id, name]) => {
+            const act = s.activeBrands?.length ? s.activeBrands : ['elevara'];
+            const on = act.includes(id);
+            return (
+              <label key={id} className="row-gap small" style={{ cursor: 'pointer' }}>
+                <input type="checkbox" checked={on} onChange={() => {
+                  const next = on ? act.filter((x) => x !== id) : [...act, id];
+                  if (next.length) api.setSettings({ activeBrands: ['elevara', 'sister', 'personal'].filter((x) => next.includes(x)) });
+                }} /> {name}
+              </label>
+            );
+          })}
+        </div>
+
         <div className="form-grid" style={{ marginTop: 12 }}>
           <label>{t('contentLang')}
             <select value={s.contentLang} onChange={(e) => api.setSettings({ contentLang: e.target.value })}>

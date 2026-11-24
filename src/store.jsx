@@ -12,7 +12,7 @@ export function initialState() {
     version: 1,
     lang: 'id',
     projects: [...buildSeedProjects(), buildThesisProject()],
-    migrations: ['interview-2026-11-24', 'thesis-project', 'interview-pdf', 'company-research', 'carousel-5', 'elevara-va-social'],
+    migrations: ['interview-2026-11-24', 'thesis-project', 'interview-pdf', 'company-research', 'carousel-5', 'elevara-va-social', 'focus-elevara'],
     practice: {},
     events: [{ id: uid('e'), interviewLumi: true, title: '🎯 Interview PA – Lumi Advertising (Zoom)', date: '2026-11-24', time: '10:15', endTime: '11:00', reminder: '60', category: 'career', notes: 'Zoom · 30–45 min · Alvina Global Partners', isDeadline: true, updatedAt: Date.now() }],
     activity: [{ id: uid('a'), ts: Date.now(), text: { en: 'Workspace created with your 4 projects', id: 'Workspace dibuat dengan 4 project kamu' } }],
@@ -25,6 +25,7 @@ export function initialState() {
       postingDays: [1, 3, 5],
       postingTime: '19:00',
       contentLang: 'en',
+      activeBrands: ['elevara'],
       lastSync: 0,
     },
   };
@@ -107,6 +108,11 @@ function migrate(st) {
     c.ideas.forEach((i) => { if (map[i.pillar]) i.pillar = map[i.pillar]; });
     (c.posts || []).forEach((p) => { if (p.topic && map[p.topic.pillar]) p.topic.pillar = map[p.topic.pillar]; });
     st.migrations.push('elevara-va-social');
+  }
+  if (!done.has('focus-elevara')) {
+    st.settings.activeBrands = ['elevara'];
+    if (st.content) st.content.brand = 'elevara';
+    st.migrations.push('focus-elevara');
   }
   if (!st.settings.googleClientId) st.settings.googleClientId = GOOGLE_CLIENT_ID;
   return st;

@@ -101,7 +101,7 @@ export function ProjectView({ projectId, openTask }) {
             ))}
           </div>
           {p.id === 'career' && (
-            <button className="btn black" style={{ marginTop: 12 }} onClick={() => setPractice('all')}><Target size={15} /> {lang === 'en' ? 'Practice interview (flashcards)' : 'Latihan interview (flashcard)'}</button>
+            <button className="btn black" style={{ marginTop: 12 }} onClick={() => setPractice(p.sections.some((x) => x.iv === 'cmea') ? 'cmea:all' : 'all')}><Target size={15} /> {lang === 'en' ? 'Practice interview (flashcards)' : 'Latihan interview (flashcard)'}</button>
           )}
         </div>
       </div>

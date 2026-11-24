@@ -42,7 +42,7 @@ function load() {
     const raw = localStorage.getItem(KEY);
     if (raw) return hydrate(JSON.parse(raw));
   } catch { /* ignore */ }
-  return initialState();
+  return migrate(initialState());
 }
 
 // One-time updates applied to data already saved in the browser.
@@ -113,6 +113,16 @@ function migrate(st) {
     st.settings.activeBrands = ['elevara'];
     if (st.content) st.content.brand = 'elevara';
     st.migrations.push('focus-elevara');
+  }
+  if (!done.has('interview-cmea')) {
+    const career = st.projects.find((p) => p.id === 'career');
+    if (career && !career.sections.some((x) => x.iv === 'cmea')) {
+      career.sections.unshift({ id: uid('s'), iv: 'cmea', name: { en: 'Interview preparation · Content Manager & EA (25 Nov, 09:30)', id: 'Persiapan interview · Content Manager & EA (25 Nov, 09.30)' }, tasks: buildInterviewTasks('cmea') });
+    }
+    if (!st.events.some((e) => e.interviewCmea)) {
+      st.events.push({ id: uid('e'), interviewCmea: true, title: '🎯 Interview Content Manager & EA', date: '2026-11-25', time: '09:30', endTime: '10:15', reminder: '60', category: 'career', notes: 'Bali time · company not shared yet · check the invite for the format', isDeadline: true, updatedAt: Date.now() });
+    }
+    st.migrations.push('interview-cmea');
   }
   if (!done.has('ig-section-live')) {
     // The Instagram section now lists the chosen carousel topics live from Social Media.

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Volume2, Eye, RotateCcw, Check, Shuffle, ChevronDown, ChevronUp, Target, Clock, Video, Lightbulb } from 'lucide-react';
-import { INTERVIEW, ALL_QUESTIONS, COMPANY } from './interview.js';
+import { INTERVIEWS, questionsOf, COMPANY } from './interview.js';
 import { useStore } from './store.jsx';
 import { Modal } from './ui.jsx';
 import { Recorder } from './Recorder.jsx';
@@ -45,15 +45,30 @@ function QA({ item, open, onToggle, lang }) {
   );
 }
 
-export function InterviewGuide({ guide, onPractice }) {
+export function InterviewGuide({ guide, onPractice: rawPractice }) {
   const { lang } = useStore();
   const [open, setOpen] = useState(null);
+  const ivKey = guide.iv || 'lumi';
+  const INTERVIEW = INTERVIEWS[ivKey];
+  const onPractice = (scope) => rawPractice(ivKey === 'lumi' ? scope : `${ivKey}:${scope}`);
+  const nQ = questionsOf(ivKey).length;
+  if (guide.type === 'review') {
+    const R = INTERVIEW.review;
+    return (
+      <div className="guide">
+        <div className="tip-box"><Lightbulb size={16} /><span><b>{R.verdict}</b></span></div>
+        <div className="co-card"><h4 style={{ marginTop: 0 }}>✅ {lang === 'en' ? 'Why it fits you' : 'Kenapa cocok untukmu'}</h4><ul className="co-list">{R.fit.map((x) => <li key={x}>{x}</li>)}</ul></div>
+        <div className="co-card"><h4 style={{ marginTop: 0 }}>👀 {lang === 'en' ? 'Things to watch / clarify' : 'Yang perlu diperhatikan / ditanyakan'}</h4><ul className="co-list">{R.watch.map((x) => <li key={x}>{x}</li>)}</ul></div>
+        <button className="btn black full" onClick={() => onPractice('all')}><Target size={15} /> {lang === 'en' ? `Practice all ${nQ} questions` : `Latihan semua ${nQ} pertanyaan`}</button>
+      </div>
+    );
+  }
   if (guide.type === 'overview') {
     return (
       <div className="guide">
         <div className="iv-meta">
           <div><Target size={15} /> {INTERVIEW.role}</div>
-          <div><Clock size={15} /> Tue, 24 Nov 2026 · 10:15 (Bali = Singapore time)</div>
+          <div><Clock size={15} /> {INTERVIEW.dateLabel || 'Tue, 24 Nov 2026 · 10:15 (Bali = Singapore time)'}</div>
           <div><Video size={15} /> {INTERVIEW.platform}</div>
           <div>👤 {lang === 'en' ? 'Recruiter' : 'Rekruter'}: {INTERVIEW.contact}</div>
         </div>
@@ -62,7 +77,7 @@ export function InterviewGuide({ guide, onPractice }) {
         <h4>{lang === 'en' ? 'How to use this guide' : 'Cara pakai panduan ini'}</h4>
         <p className="small">{INTERVIEW.howTo}</p>
         <div className="tip-box"><Lightbulb size={16} /><span>{INTERVIEW.finalReminder}</span></div>
-        <button className="btn black full" onClick={() => onPractice('all')}><Target size={15} /> {lang === 'en' ? 'Practice all 18 questions' : 'Latihan semua 18 pertanyaan'}</button>
+        <button className="btn black full" onClick={() => onPractice('all')}><Target size={15} /> {lang === 'en' ? `Practice all ${nQ} questions` : `Latihan semua ${nQ} pertanyaan`}</button>
       </div>
     );
   }
@@ -139,18 +154,21 @@ export function InterviewGuide({ guide, onPractice }) {
     return <div className="guide"><p className="small muted">{lang === 'en' ? 'Tick the 3 questions you will ask at the end of the interview.' : 'Centang 3 pertanyaan yang akan kamu tanyakan di akhir interview.'}</p></div>;
   }
   if (guide.type === 'checklist') {
-    return <div className="guide"><div className="tip-box"><Lightbulb size={16} /><span>{lang === 'en' ? 'Tick each item as you finish it. Join Zoom at 10:05–10:10.' : 'Centang setiap item yang sudah selesai. Masuk Zoom jam 10:05–10:10.'}</span></div></div>;
+    return <div className="guide"><div className="tip-box"><Lightbulb size={16} /><span>{ivKey === 'lumi' ? (lang === 'en' ? 'Tick each item as you finish it. Join Zoom at 10:05–10:10.' : 'Centang setiap item yang sudah selesai. Masuk Zoom jam 10:05–10:10.') : (lang === 'en' ? `Tick each item as you finish it. Be ready 15 minutes before ${INTERVIEW.time}.` : `Centang setiap item yang sudah selesai. Siap 15 menit sebelum jam ${INTERVIEW.time}.`)}</span></div></div>;
   }
   return null;
 }
 
-export function PracticeModal({ scope, onClose }) {
+export function PracticeModal({ scope: rawScope, onClose }) {
   const { state, api, lang } = useStore();
+  const [ivKey, scope] = rawScope.includes(':') ? rawScope.split(':') : ['lumi', rawScope];
+  const INTERVIEW = INTERVIEWS[ivKey];
+  const ALL_QUESTIONS = questionsOf(ivKey);
   const terms = scope === 'terms';
   const base = useMemo(() => {
     if (terms) return INTERVIEW.glossary.map(([term, en, id]) => ({ id: `t_${term}`, q: term, a: en, meaning: id }));
     return scope === 'all' ? ALL_QUESTIONS : ALL_QUESTIONS.filter((q) => q.sectionId === scope);
-  }, [scope, terms]);
+  }, [scope, terms, ivKey]); // eslint-disable-line react-hooks/exhaustive-deps
   const [order, setOrder] = useState(base.map((_, i) => i));
   const [i, setI] = useState(0);
   const [show, setShow] = useState(false);

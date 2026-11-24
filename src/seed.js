@@ -1,4 +1,4 @@
-import { INTERVIEW } from './interview.js';
+import { INTERVIEW, INTERVIEWS } from './interview.js';
 
 export const COMPANY_SUBS = () => sub(['Read: what Lumi Advertising does & its 5 services', 'Understand the lead → appointment process (PA role!)', 'Read: who Alvina Global Partners is', 'Memorise 2 talking points about Lumi', 'Learn 8 property terms (speed-to-lead, HDB MOP...)']);
 // Starting data for MONIKA WORKSPACE. Titles are [English, Indonesian] pairs.
@@ -31,26 +31,28 @@ const inDays = (d) => {
 
 
 // Interview tasks built from Monika's Lumi Advertising preparation document.
-export function buildInterviewTasks() {
-  const D = INTERVIEW.date;
-  const tasks = [
-    t(['Interview overview: date, time, Zoom & focus areas', 'Ringkasan interview: tanggal, jam, Zoom & fokus'], { priority: 'high', deadline: D, guide: { type: 'overview' } }),
-  ];
-  for (const sec of INTERVIEW.sections) {
+export function buildInterviewTasks(ivKey = 'lumi') {
+  const IV = INTERVIEWS[ivKey] || INTERVIEW;
+  const g = (o) => (ivKey === 'lumi' ? o : { ...o, iv: ivKey });
+  const D = IV.date;
+  const tasks = [];
+  if (IV.review) tasks.push(t(['My take on this job: fit, salary & what to clarify', 'Pendapatku soal pekerjaan ini: kecocokan, gaji & yang perlu ditanyakan'], { priority: 'high', deadline: D, guide: g({ type: 'review' }) }));
+  tasks.push(t(ivKey === 'lumi' ? ['Interview overview: date, time, Zoom & focus areas', 'Ringkasan interview: tanggal, jam, Zoom & fokus'] : ['Interview overview: date, time & focus areas', 'Ringkasan interview: tanggal, jam & fokus'], { priority: 'high', deadline: D, guide: g({ type: 'overview' }) }));
+  for (const sec of IV.sections) {
     tasks.push(t([`Practice ${sec.title} (${sec.items.map((i) => i.id.toUpperCase()).join(', ')})`, `Latihan ${sec.titleId} (${sec.items.map((i) => i.id.toUpperCase()).join(', ')})`], {
-      priority: 'high', deadline: D, guide: { type: 'qa', section: sec.id },
+      priority: 'high', deadline: D, guide: g({ type: 'qa', section: sec.id }),
       subtasks: sec.items.map((i) => ({ id: uid('st'), qid: i.id, title: `${i.id.toUpperCase()}: ${i.q}`, done: false })),
     }));
   }
   tasks.push(
-    t(['Quick knowledge revision: 13 key terms', 'Revisi cepat: 13 istilah penting'], { priority: 'high', deadline: D, guide: { type: 'glossary' } }),
+    t([`Quick knowledge revision: ${IV.glossary.length} key terms`, `Revisi cepat: ${IV.glossary.length} istilah penting`], { priority: 'high', deadline: D, guide: g({ type: 'glossary' }) }),
     t(['Choose 3 questions to ask the interviewer', 'Pilih 3 pertanyaan untuk interviewer'], {
-      priority: 'high', deadline: D, guide: { type: 'ask' },
-      subtasks: INTERVIEW.askThem.map((q) => ({ id: uid('st'), title: q, done: false })),
+      priority: 'high', deadline: D, guide: g({ type: 'ask' }),
+      subtasks: IV.askThem.map((q) => ({ id: uid('st'), title: q, done: false })),
     }),
-    t(['Final practice checklist (before Zoom)', 'Checklist terakhir (sebelum Zoom)'], {
-      priority: 'high', deadline: D, time: '09:45', reminder: '10', guide: { type: 'checklist' },
-      subtasks: INTERVIEW.checklist.map((q) => ({ id: uid('st'), title: q, done: false })),
+    t(ivKey === 'lumi' ? ['Final practice checklist (before Zoom)', 'Checklist terakhir (sebelum Zoom)'] : ['Final checklist (before the interview)', 'Checklist terakhir (sebelum interview)'], {
+      priority: 'high', deadline: D, time: ivKey === 'lumi' ? '09:45' : '08:45', reminder: '10', guide: g({ type: 'checklist' }),
+      subtasks: IV.checklist.map((q) => ({ id: uid('st'), title: q, done: false })),
     }),
   );
   return tasks;

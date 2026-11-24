@@ -262,3 +262,255 @@ export const COMPANY = {
   ],
   sources: ['lumiadvertising.com', 'Instagram @alvinaglobalpartners', 'LinkedIn Fyrus Atan'],
 };
+
+// Content Manager & Executive Assistant interview (25 Nov 2026, 09:30 Bali time). Company not known yet.
+export const CMEA = {
+  key: 'cmea',
+  role: 'Content Manager & Executive Assistant · Bali (hybrid)',
+  contact: 'Company / owner: not shared yet',
+  date: '2026-11-25',
+  time: '09:30',
+  endTime: '10:15',
+  dateLabel: 'Wed, 25 Nov 2026 · 09:30 Bali time',
+  platform: 'Format not confirmed (online or in person). Check the invite.',
+  focus: 'Growing a personal brand in fitness, mental health and finance: content strategy, planning, research, video editing, copywriting, publishing and performance tracking, plus day-to-day executive and admin support. They want someone proactive, organized and independent who keeps things moving without being chased.',
+  howTo: 'These are speaking guides, not scripts. Learn the key points, then say them in your own words with a real example. Your story for this role: you have already done both halves of the job. You supported a COO as an Executive Assistant, and you plan, write, design and publish content every week (you run the Elevara Instagram end to end).',
+  finalReminder: 'They care most about ownership. In every answer, show that you notice what is needed, act on it, and report back without being asked. Use numbers and real examples where you can.',
+  sections: [
+    {
+      id: 'c_s1', title: '1. Opening and motivation', titleId: '1. Pembukaan & motivasi',
+      items: [
+        {
+          id: 'c1', q: 'Tell me about yourself.',
+          meaning: 'Pembuka ±1 menit. Mereka ingin dengar bahwa kamu punya DUA keahlian yang mereka cari: konten/social media DAN executive assistant, plus sifat mandiri.',
+          keys: ['Two sides: content & social media + executive/admin support', 'EA to a COO: scheduling, coordination, communication, projects', 'Content: strategy, planning, Canva design, captions, publishing, Reels editing', 'Proactive, organized, works independently', 'Excited by personal brands with a real message'],
+          a: "Thank you for having me. I'm Monika, and my experience sits right between content and operations. I worked as an Executive Assistant supporting a COO, where I handled scheduling, coordination, communication and project follow-ups. At the same time I've worked in creative production and social media: planning content, writing captions, designing carousels, editing short videos, publishing, and checking what performs. Right now I plan and run an Instagram account end to end, from the content calendar to the analytics. I'm very organized, I like owning my work, and I'm comfortable working independently. That's why this role caught my attention: it combines both things I enjoy, building a brand and keeping a busy person's work running smoothly.",
+        },
+        {
+          id: 'c2', q: 'Why are you interested in this role?',
+          meaning: 'Cek motivasi: apakah kamu paham ini gabungan 2 peran dan benar-benar tertarik dengan topik fitness, mental health, finance (bukan asal melamar).',
+          keys: ['Combination of content + EA fits my background exactly', 'Topics that genuinely help people: health, mind, money', 'Like working closely with one person and seeing direct impact', 'Want to grow a brand from strategy to results'],
+          a: "Two reasons. First, the role combines content management and executive support, and that's exactly the mix I've been doing, so I know I can contribute from day one. Second, I like the topics. Fitness, mental health and finance are areas where good content really helps people, and I'm interested in them personally too. I also enjoy working closely with one person, understanding how they think, and seeing the direct impact of my work, whether that's a post that performs well or a week that runs smoothly because everything was prepared.",
+        },
+        {
+          id: 'c3', q: 'What do you understand about building a personal brand?',
+          meaning: 'Tes pemahaman: personal brand = orangnya adalah brand-nya. Kuncinya keaslian, konsistensi, kepercayaan, dan nilai untuk audiens.',
+          keys: ['The person is the brand: their story, values, expertise', 'Authentic voice > polished ads', 'Consistency: pillars, look, posting rhythm', 'Value first: educate, inspire, connect', 'Trust leads to community, then opportunities'],
+          a: "A personal brand is built around the person, their story, their values and their expertise. People follow people they trust, so the content has to sound like them and show real life, not just polished promotion. The basics are clear content pillars, a recognizable voice and look, and a consistent posting rhythm. Most of the content should give value: teach something, share an honest experience, or start a conversation. Over time that builds trust and a community, and that's what opens doors for things like coaching, products or partnerships.",
+        },
+        {
+          id: 'c4', q: 'Why should we hire you?',
+          meaning: 'Penutup "jual diri". Rangkum: kamu sudah melakukan kedua sisi pekerjaan, mandiri, dan bisa langsung mulai.',
+          keys: ['Already done both halves: EA + content end to end', 'Ownership: plan, execute, report without being chased', 'Organized systems (calendars, trackers, content plans)', 'Can start quickly, learn the person’s style fast'],
+          a: "Because I've already done both halves of this job. I've supported an executive with schedules, communication and projects, and I've run content from the idea to the analytics. I don't need someone to manage me step by step. I like setting up simple systems, like a content calendar, a task tracker and weekly check-ins, so the person always knows what's happening. I learn people's style quickly, and I can start soon. I think you'd get someone who makes your week lighter and your brand more consistent at the same time.",
+        },
+      ],
+    },
+    {
+      id: 'c_s2', title: '2. Content strategy and planning', titleId: '2. Strategi & perencanaan konten',
+      items: [
+        {
+          id: 'c5', q: 'How would you build a content strategy for a personal brand in fitness, mental health and finance?',
+          meaning: 'Pertanyaan inti. Tunjukkan langkah yang jelas: pahami orangnya & audiens → pilar konten → format → ritme → ukur.',
+          keys: ['Start with the person: goals, story, expertise, audience', 'Audit current account + look at similar creators', 'Pillars, e.g. Move (fitness) / Mind (mental health) / Money (finance) / Life & story', 'Mix formats: Reels for reach, carousels for saves, Stories for connection', 'Calendar + weekly rhythm, then review numbers monthly'],
+          a: "I'd start with the person: what they want the brand to achieve, their story, what they're qualified to talk about, and who they want to reach. Then I'd audit the current account and look at similar creators to see what works and where the gap is. From there I'd set three or four content pillars, for example Move for fitness, Mind for mental health, Money for finance, and a personal pillar for their story and daily life. Each pillar gets formats that fit: Reels for reach, carousels for saves and education, Stories for connection. I'd put it into a monthly calendar with a steady posting rhythm, and review the numbers every month to double down on what works.",
+        },
+        {
+          id: 'c6', q: 'How do you plan and organize a content calendar?',
+          meaning: 'Mereka ingin lihat sistem kerjamu: alat, ritme, batching, dan bagaimana kamu memastikan tidak ada yang telat.',
+          keys: ['Monthly plan, weekly detail', 'Fixed posting days (e.g. 3× a week) + pillar rotation', 'Each post: topic, hook, format, script/caption, design/edit date, post date', 'Batch filming/design to stay ahead', 'Tools: Notion/Google Sheets, Canva, scheduler (Meta Business Suite)'],
+          a: "I plan monthly and detail it weekly. First I set fixed posting days, for example three times a week, and rotate the pillars so the feed stays balanced. Every post in the calendar has a topic, a hook, the format, the script or caption, and three dates: when it's designed or edited, when it's reviewed, and when it goes live. I like batching, so filming or designing several pieces in one session, which keeps us a week or two ahead. I use tools like Notion or Google Sheets for the plan, Canva for design, and a scheduler like Meta Business Suite. That's actually how I run the Elevara account right now: three posts a week, each with its own design and review day.",
+        },
+        {
+          id: 'c7', q: 'How do you research content ideas and trends?',
+          meaning: 'Cek kebiasaan riset: dari mana idenya, dan bagaimana memilih tren yang cocok dengan brand (tidak asal ikut tren).',
+          keys: ['Audience: comments, DMs, questions, polls', 'Competitors & similar creators: what gets saved/shared', 'Trends: Reels audio, TikTok, Google Trends, news in the niche', 'Own insights: repeat what performed', 'Filter: does it fit the brand and the person’s expertise?'],
+          a: "I look in a few places. The best ideas usually come from the audience itself: questions in comments, DMs, and poll answers. I also follow similar creators and note which posts get the most saves and shares, not just likes. For trends I check trending Reels audio, TikTok, Google Trends and news in the niche. And I look at our own insights to see which topics did well and can be repeated in a new way. Then I filter everything with one question: does this fit the brand and is the person credible talking about it? I'd rather skip a trend than post something off-brand.",
+        },
+        {
+          id: 'c8', q: 'How would you make sure the content sounds like the person, not like you?',
+          meaning: 'Personal brand = suara orangnya. Tunjukkan cara kamu menangkap gaya bicara & nilai mereka, dan alur review.',
+          keys: ['Listen: interviews, voice notes, past posts, how they talk', 'Simple brand voice guide: words they use / avoid, tone', 'Their stories & opinions as raw material', 'Draft → they review → adjust; fewer edits over time'],
+          a: "I'd spend time learning how they speak: their past posts, videos, voice notes, even how they write messages. I'd turn that into a short voice guide with the words and phrases they use, things they would never say, and the tone, whether that's calm, direct or funny. I'd also collect their real stories and opinions, because that's what makes a personal brand feel personal. At the start I'd send drafts for review and note every change they make, so after a few weeks the drafts need fewer and fewer edits.",
+        },
+      ],
+    },
+    {
+      id: 'c_s3', title: '3. Production: video, copywriting, publishing', titleId: '3. Produksi: video, copywriting, publishing',
+      items: [
+        {
+          id: 'c9', q: 'What is your experience with video editing? Which tools do you use?',
+          meaning: 'Jujur soal level & alatmu, lalu tunjukkan kamu paham apa yang bikin Reels bagus (hook, tempo, subtitle).',
+          keys: ['Short-form Reels editing (say honestly which tools: CapCut, Canva, InShot, Premiere…)', 'Hook in first 1–3 seconds, cut dead space, fast pacing', 'Subtitles/captions on screen (many watch without sound)', 'Trending audio, cover image, brand style', 'Willing to level up with their preferred tool'],
+          a: "I edit short-form videos for Instagram, mainly Reels. I'm most comfortable with tools like CapCut and Canva, and I'm happy to learn any tool you already use. When I edit, I focus on what makes people keep watching: a strong hook in the first one to three seconds, cutting pauses and dead space, keeping the pace tight, adding on-screen captions because many people watch without sound, and choosing audio that fits the mood. I also keep a consistent style, like the same fonts, colors and cover format, so the videos are recognizable in the feed.",
+        },
+        {
+          id: 'c10', q: 'How do you write a good hook and caption?',
+          meaning: 'Tes copywriting. Jelaskan struktur: hook → nilai → CTA, dan beri contoh singkat untuk niche mereka.',
+          keys: ['Hook names a problem or surprising truth in one line', 'Body: one clear idea, short lines, easy to read', 'CTA: save, share, comment, DM', 'Example: “You don’t need more motivation. You need a smaller first step.”'],
+          a: "A good hook stops the scroll in one line, usually by naming a problem the audience feels or saying something surprising. For example, for mental health: 'You don't need more motivation. You need a smaller first step.' Or for finance: 'Your salary isn't the problem. The first three days after payday are.' Then the caption delivers one clear idea in short, easy lines, ideally with something practical people can try. And it ends with one call to action, like save this for later, share it with a friend, or comment a word to get a guide. Simple, human, and useful.",
+        },
+        {
+          id: 'c11', q: 'Walk me through your publishing process.',
+          meaning: 'Mereka ingin lihat kamu rapi & teliti sebelum posting: cek, jadwal, dan engagement setelah posting.',
+          keys: ['Final check: spelling, facts, tags, audio, cover, captions', 'Schedule at the best time for the audience', 'Prepare Story to boost the post', 'First hour: reply to comments, engage', 'Log results in the tracker'],
+          a: "Before anything goes live I do a final check: spelling, facts, tags, links, the cover image, on-screen captions and audio. Then I schedule it for the time the audience is most active, based on insights. On the day, I share it to Stories with a poll or question sticker to push it a bit more, and in the first hour I reply to comments and engage, because that early activity helps reach. Afterwards I log the post in a tracker so we can compare results over time.",
+        },
+        {
+          id: 'c12', q: 'Mental health and finance are sensitive topics. How would you handle them responsibly?',
+          meaning: 'Tes kedewasaan: jangan memberi saran medis/keuangan yang menyesatkan, cek fakta, beri disclaimer, dan tahu batas.',
+          keys: ['Accuracy: check facts & sources, no exaggerated promises', 'Share experience, not prescriptions (not medical/financial advice)', 'Disclaimers & point to professionals/helplines when needed', 'Kind tone, no shaming', 'Careful with comments/DMs: escalate serious ones to the owner'],
+          a: "I'd be careful with both. For finance, I'd keep it educational, check facts, avoid promising returns, and add a note that it's not financial advice. For mental health, I'd share experiences and simple habits rather than anything that sounds like treatment, keep the tone kind and never shaming, and point people to professional help when it's appropriate. I'd also be careful with comments and DMs. If someone shares something serious, I wouldn't try to handle it myself. I'd flag it to you and make sure we respond appropriately.",
+        },
+      ],
+    },
+    {
+      id: 'c_s4', title: '4. Performance and growth', titleId: '4. Performa & pertumbuhan',
+      items: [
+        {
+          id: 'c13', q: 'Which metrics do you track, and what do they tell you?',
+          meaning: 'Tes analitik dasar. Sebut metrik + artinya, dan bahwa kamu pakai data untuk keputusan.',
+          keys: ['Reach & impressions: how many saw it', 'Engagement rate: likes, comments, saves, shares ÷ reach', 'Saves & shares = valuable content', 'Reels: watch time / retention, 3-second hold', 'Follows from post, profile visits, link clicks, DMs = business impact'],
+          a: "I look at reach to see how many people saw a post, and engagement rate, so likes, comments, saves and shares compared with reach. Saves and shares matter most to me, because they show the content was genuinely useful. For Reels I check watch time and how many people stayed past the first few seconds, which tells me whether the hook worked. And I track the numbers closest to business goals: profile visits, new followers from a post, link clicks and DMs. I review them weekly and do a deeper summary each month.",
+        },
+        {
+          id: 'c14', q: 'What would you do if engagement suddenly dropped?',
+          meaning: 'Cek cara berpikir: tidak panik, cari penyebab dengan data, uji perubahan kecil.',
+          keys: ['Check data first: which posts, which metric, since when', 'Possible causes: hooks, formats, timing, topics, algorithm shift', 'Compare with best performers', 'Test 1–2 changes for 2 weeks', 'Report findings to the owner'],
+          a: "First I wouldn't panic. I'd look at the data: which posts dropped, which metric, and since when. Then I'd compare them with our best performers to find the difference. Was it the hook, the format, the posting time, or the topic? Sometimes it's an algorithm shift, like Reels getting more reach than carousels. I'd pick one or two changes to test for about two weeks, for example stronger hooks or more Reels, and measure again. And I'd keep you updated with a short summary of what I found and what I'm testing.",
+        },
+        {
+          id: 'c15', q: 'Tell me about a piece of content that performed well. Why did it work?',
+          meaning: 'Minta contoh nyata (STAR). Contoh jawaban di bawah memakai post Elevara: isi bagian [ ] dengan angka asli dari Instagram Insights, atau ganti dengan contoh lain yang hasilnya kamu tahu. Jangan mengarang angka.',
+          keys: ['Situation: which account, goal', 'What you made: format, hook, topic', 'Result (numbers if possible: reach, saves, DMs)', 'Why it worked + what you repeated'],
+          a: "One example is an educational carousel I made for a business account, about the admin tasks founders should hand off first. The goal was to show the value of support services. I opened with a hook about founders living in their inbox, then gave three practical areas to delegate, and ended with a clear call to message us. It got [number] saves and [number] shares, more than our usual posts, because it was practical and easy to come back to. What I learned is that specific, useful carousels with a clear problem in the hook get saved and shared, so I used that structure for the next posts too.",
+        },
+      ],
+    },
+    {
+      id: 'c_s5', title: '5. Executive assistant', titleId: '5. Executive assistant',
+      items: [
+        {
+          id: 'c16', q: 'How do you manage an executive’s calendar, inbox and priorities?',
+          meaning: 'Tes sistem EA: cara kamu memprioritaskan, melindungi waktu atasan, dan memberi update.',
+          keys: ['Calendar: buffers, focus blocks, prep notes for meetings', 'Inbox: triage → reply / delegate / flag for decision', 'Daily or weekly brief: what’s coming, what needs a decision', 'Priorities: urgent vs important, ask when unsure', 'Experience as EA to a COO'],
+          a: "When I supported a COO, I treated the calendar as something to protect, not just fill. I added buffers between meetings, blocked focus time, and prepared short notes before important meetings. For the inbox, I'd sort messages into three groups: things I can answer myself, things to pass to someone else, and things that need their decision, which I'd summarize clearly. I like a short daily or weekly brief: what's coming up, what's waiting on them, and what I've already handled. If priorities conflict, I'll suggest an order, but I'll always check when I'm not sure.",
+        },
+        {
+          id: 'c17', q: 'How do you anticipate someone’s needs before they ask?',
+          meaning: 'Ini kata kunci di lowongan ("anticipate needs"). Beri contoh konkret proaktif.',
+          keys: ['Learn routines, preferences, recurring tasks', 'Look ahead 1–2 weeks: deadlines, travel, bills, renewals', 'Prepare before it’s needed (docs, bookings, reminders)', 'Example from EA role'],
+          a: "By learning their routines and looking ahead. After a few weeks you know their preferences, their recurring tasks and what usually causes stress. Then I check the next one or two weeks for deadlines, trips, payments or renewals, and prepare things before they're needed: booking, documents, reminders, or a draft reply. For example, in my EA role, before recurring meetings I'd already have the agenda and the open action points from last time ready, so the COO never had to ask for them. My goal is that they rarely have to remember small things themselves.",
+        },
+        {
+          id: 'c18', q: 'You will see private information: finances, health, schedules. How do you handle confidentiality?',
+          meaning: 'Kepercayaan. Jawab tegas: rahasia tetap rahasia, akses rapi, tidak cerita ke siapa pun.',
+          keys: ['Confidential by default, never shared or discussed', 'Secure passwords/password manager, 2FA, shared access done properly', 'Personal vs work devices & files kept organized', 'Comfortable signing an NDA'],
+          a: "I treat everything as confidential by default. Whatever I see about finances, health or personal plans stays between us. I don't discuss it with anyone or post anything without approval. Practically, I'd use secure tools, like a password manager and two-factor authentication, keep files organized with the right access, and avoid using personal devices in unsafe ways. I've handled sensitive information as an Executive Assistant before, and I'm comfortable signing an NDA if needed.",
+        },
+        {
+          id: 'c19', q: 'A content deadline and an urgent personal/admin request land at the same time. What do you do?',
+          meaning: 'Tes prioritas & komunikasi. Tidak ada jawaban "sempurna": tunjukkan cara menilai dampak & bicara jujur.',
+          keys: ['Assess impact & real deadline of each', 'Handle the truly time-critical one first', 'Communicate: “I’ll do X now, Y will be ready by 3pm”', 'Content buffer (batching) means posts rarely depend on the last minute', 'Adjust the plan, don’t silently drop anything'],
+          a: "I'd quickly check the real impact and deadline of each. If the admin request is truly time-critical, like a payment or a booking that will be lost, I'd do that first. Then I'd tell you clearly, for example, 'I'm sorting the booking now, the post will be ready by three.' This is also why I keep content one or two weeks ahead through batching, so a post rarely depends on the last hour. The important thing is that nothing gets silently dropped. If something has to move, I say so and adjust the plan.",
+        },
+      ],
+    },
+    {
+      id: 'c_s6', title: '6. Independence and ownership', titleId: '6. Mandiri & tanggung jawab',
+      items: [
+        {
+          id: 'c20', q: 'Tell me about a time you took initiative without being asked.',
+          meaning: 'Lowongan menekankan initiative & ownership. Contoh di bawah hanya ilustrasi struktur STAR: ganti dengan kejadian nyata dari pekerjaanmu (misalnya waktu jadi EA untuk COO).',
+          keys: ['Situation: noticed a problem nobody owned', 'Action: proposed/built a fix (system, template, tracker)', 'Result: saved time / fewer mistakes / better results', 'Shows you act, then report'],
+          a: "In one of my previous roles, I noticed that content and project requests were coming in through different chats, and things were getting missed or done twice. Nobody had asked me to fix it, but I set up a simple shared tracker with each request, owner, deadline and status, and a short weekly check-in. I showed it to the team, they started using it, and within a few weeks there were far fewer missed deadlines and less back-and-forth. I like doing that: if I see a gap, I fix it, and then I explain what I changed.",
+        },
+        {
+          id: 'c21', q: 'How do you stay accountable when you work without supervision?',
+          meaning: 'Hybrid & mandiri: mereka ingin yakin kamu tetap produktif dan transparan tanpa diawasi.',
+          keys: ['Clear weekly plan & priorities', 'Shared tracker so progress is visible', 'Short end-of-day or weekly update', 'Raise blockers early, don’t wait', 'Own mistakes and fix them'],
+          a: "I make my work visible. I start each week with a clear plan and priorities, and I keep everything in a shared tracker so you can see the status anytime without asking. I like sending a short update, either at the end of the day or once a week: what's done, what's next, and anything I need from you. If something is blocked, I raise it early instead of waiting. And if I make a mistake, I say it straight away and come with a fix. That way you can trust the work is moving even when you're busy.",
+        },
+        {
+          id: 'c22', q: 'What would you do in your first 30 days?',
+          meaning: 'Rencana konkret menunjukkan kamu siap mulai cepat ("join asap").',
+          keys: ['Week 1: learn the person, goals, tools, access; audit account & admin', 'Week 2: brand voice guide, pillars, calendar, EA routines', 'Week 3–4: publish consistently, set up tracker & reports', 'Day 30: review results, agree next goals'],
+          a: "In the first week I'd focus on learning: your goals for the brand, your routines and preferences, the tools and accounts, and a quick audit of the current content and admin setup. In the second week I'd create a simple brand voice guide, confirm the content pillars, build the first month's calendar, and set up the EA routines, like inbox and calendar habits. In weeks three and four I'd publish consistently, set up a performance tracker, and handle the daily admin. At day thirty I'd share a short review of what worked and agree on the next goals with you.",
+        },
+      ],
+    },
+    {
+      id: 'c_s7', title: '7. Practical questions', titleId: '7. Pertanyaan praktis',
+      items: [
+        {
+          id: 'c23', q: 'The salary is Rp7,500,000 per month. Is that OK for you? When can you start?',
+          meaning: 'Mereka cek kecocokan gaji & ketersediaan. Jawab positif tapi tetap profesional; boleh tanya soal review gaji & ruang lingkup.',
+          keys: ['Positive: comfortable with the range', 'Ask (politely) about performance review / growth', 'Clarify scope & working hours if not explained', 'Give a realistic start date'],
+          a: "Yes, the salary works for me, and I appreciate that BPJS is included. I'd be glad to know whether there's a performance review after the probation period, since the role covers both content and executive support. In terms of starting, I can start soon. I'd just like to confirm the working schedule and how the hybrid setup works, and then I can give you an exact date.",
+        },
+        {
+          id: 'c24', q: 'Do you have any other commitments? (e.g. your own business)',
+          meaning: 'Kalau mereka tahu kamu punya Elevara, mereka akan cek komitmen. Jawab jujur, tenang, dan tegaskan prioritasmu pada pekerjaan ini.',
+          keys: ['Be honest: you manage content for a small agency/side project', 'It keeps your skills sharp (you can show it as portfolio)', 'It won’t clash: this role is your main priority, during working hours', 'Open to discuss any concern'],
+          a: "Yes, I've been building content for a small business project, which is actually where a lot of my recent content work comes from, and I'm happy to show it as part of my portfolio. If I join you, this role would be my main focus during working hours, and I would make sure nothing clashes with my responsibilities here. If you have any concerns about it, I'm completely open to talking about it.",
+        },
+      ],
+    },
+  ],
+  glossary: [
+    ['Personal brand', 'A brand built around a person: their story, values and expertise.', 'Brand yang dibangun dari seseorang: cerita, nilai, dan keahliannya.'],
+    ['Content pillar', 'A main theme the account posts about regularly.', 'Tema utama yang rutin dibahas akun.'],
+    ['Content calendar', 'A plan of what gets posted, when, and in which format.', 'Rencana apa yang diposting, kapan, dan formatnya.'],
+    ['Hook', 'The first line or 1–3 seconds that stops the scroll.', 'Kalimat/detik pertama yang membuat orang berhenti scroll.'],
+    ['CTA', 'Call to action: the next step you ask people to take.', 'Ajakan langkah berikutnya (save, share, DM).'],
+    ['Reach', 'How many unique accounts saw the content.', 'Jumlah akun berbeda yang melihat konten.'],
+    ['Impressions', 'How many times the content was shown in total.', 'Total berapa kali konten ditampilkan.'],
+    ['Engagement rate', 'Interactions (likes, comments, saves, shares) divided by reach.', 'Interaksi dibagi reach, ukuran seberapa "nyambung" konten.'],
+    ['Retention / watch time', 'How long people keep watching a video.', 'Berapa lama orang menonton video.'],
+    ['Repurposing', 'Turning one piece of content into several formats.', 'Mengolah 1 konten jadi beberapa format.'],
+    ['Batching', 'Creating several pieces of content in one session.', 'Membuat banyak konten sekaligus dalam satu sesi.'],
+    ['Brand voice', 'The consistent tone and way of speaking of a brand.', 'Gaya bahasa & nada bicara yang konsisten.'],
+    ['UGC', 'User-generated content: content made by the audience or customers.', 'Konten yang dibuat oleh audiens/pelanggan.'],
+    ['KPI', 'Key performance indicator: a number that shows progress.', 'Angka untuk mengukur kemajuan/kinerja.'],
+    ['Inbox triage', 'Sorting messages into reply, delegate or needs a decision.', 'Memilah email: dibalas, dialihkan, atau butuh keputusan.'],
+    ['Gatekeeping', 'Protecting the executive’s time from unnecessary requests.', 'Menjaga waktu atasan dari permintaan yang tidak perlu.'],
+    ['SOP', 'Standard operating procedure: a step-by-step way of doing a task.', 'Langkah baku untuk mengerjakan suatu tugas.'],
+  ],
+  askThem: [
+    'Whose personal brand will I be working on, and what is the main goal for the next 6–12 months?',
+    'How is the time split between content work and executive/admin support on a typical week?',
+    'How does the hybrid setup work: which days on site, and where?',
+    'What tools are you using now for content, scheduling and tasks?',
+    'Will I be filming as well, or mainly editing footage that is provided?',
+    'How will you measure success in this role after the first three months?',
+    'Is there a probation period, and is there a salary review after it?',
+  ],
+  checklist: [
+    'Ask the recruiter (politely) for the company or brand name and the interview format, if not shared yet.',
+    'Practice your self-introduction out loud (1 minute).',
+    'Prepare 2 real examples: one content result, one time you took initiative.',
+    'Open your portfolio: Elevara Instagram posts, carousels, Reels you edited.',
+    'Write 2 sample hooks for fitness, mental health or finance.',
+    'Pick 3 questions to ask them.',
+    'Check internet, camera, mic (or route & outfit if in person). Be ready by 09:15.',
+  ],
+  review: {
+    verdict: 'Good match for you, worth going for, with a few things to clarify.',
+    fit: [
+      'Both halves of the job match your background: EA to a COO + creative production + social media management.',
+      'You already run a real content system (Elevara): pillars, 3×/week calendar, Canva design, captions, publishing, scheduling. That is your portfolio.',
+      'Topics (fitness, mental health, finance) are friendly for personal-brand content and easy to grow with educational carousels and Reels.',
+    ],
+    watch: [
+      'It is really two jobs in one. Ask how the week is split, so the EA side does not eat all the content time.',
+      'Salary Rp7.5M: well above the Badung minimum wage and fair for Bali, but on the lower side for a combined content manager + EA. Fine to accept; ask about a review after probation.',
+      'THR "after 1 year": by Indonesian rules (Permenaker 6/2016) THR is owed pro-rata after 1 month of work. Not something to argue in the first interview, but good to know before signing.',
+      '“Executive tasks” can include personal errands. Ask what that usually includes.',
+      'Hybrid + Bali-based: confirm location, office days and working hours (content often needs weekend posting/replies).',
+      'If they ask about Elevara: be honest, show it as portfolio, and say this job would be your main priority.',
+    ],
+  },
+};
+
+export const INTERVIEWS = { lumi: INTERVIEW, cmea: CMEA };
+export const questionsOf = (iv) => (INTERVIEWS[iv] || INTERVIEW).sections.flatMap((s) => s.items.map((it) => ({ ...it, section: s.title, sectionId: s.id })));

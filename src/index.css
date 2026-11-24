@@ -581,3 +581,6 @@ main { background: #fff; }
 .co-say { display: flex; gap: 8px; align-items: flex-start; justify-content: space-between; background: #F4F0FF; border-radius: 12px; padding: 10px 12px; font-size: 13.5px; line-height: 1.5; margin-bottom: 6px; }
 @media (max-width: 860px) { .co-facts > div { grid-template-columns: 1fr; gap: 0; } }
 .gsync.install { background: #F3B5D6; color: #17161B; } .gsync.install .muted { color: #5a3a4c; }
+.claude-helper { margin-top: 12px; background: #F4F0FF; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+.claude-helper ol { margin: 0; padding-left: 18px; line-height: 2; }
+.claude-helper textarea { background: #fff; }

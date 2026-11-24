@@ -343,8 +343,36 @@ function PostModal({ postId, onClose, busy, run, writeCarousel, setErr }) {
   const post = state.content.posts.find((p) => p.id === postId);
   const [fb, setFb] = useState('');
   const [view, setView] = useState(0);
+  const [helper, setHelper] = useState(null); // { prompt, paste, copied, error }
   const fileRef = useRef();
   if (!post) return null;
+  const hasKey = !!state.settings.anthropicKey;
+  const en = lang === 'en';
+  const claudePrompt = (feedback) => `You are the Instagram content writer for my brand. Follow this strategy exactly:
+
+${state.settings.strategies[post.brand]}
+
+Write a complete Instagram carousel (7–9 slides, one idea per slide, max ~25 words per slide) in ${state.settings.contentLang === 'id' ? 'Bahasa Indonesia' : 'English'}.
+Topic: ${post.topic?.title || ''}
+Hook: ${post.topic?.hook || ''}
+Pillar: ${post.topic?.pillar || ''}
+${post.carousel && !post.carousel.template ? `\nThis is a revision of the current version:\n${JSON.stringify({ slides: post.carousel.slides, caption: post.carousel.caption })}\n` : ''}${feedback ? `\nMy feedback to apply: ${feedback}\n` : ''}
+I design every slide by hand in Canva, so give each slide a short Canva design note (layout, emphasis, visual idea).
+
+Reply with ONLY this JSON, no other text:
+{"slides":[{"headline":"","body":"","design_note":""}],"caption":"hook line, value, CTA (80–150 words)","hashtags":["#..."],"cta":""}`;
+  const applyPaste = () => {
+    try {
+      const raw = helper.paste.slice(helper.paste.indexOf('{'), helper.paste.lastIndexOf('}') + 1);
+      const j = JSON.parse(raw);
+      if (!Array.isArray(j.slides) || !j.slides.length || !j.caption) throw new Error('x');
+      const car = { slides: j.slides.map((x) => ({ headline: x.headline || '', body: x.body || '', design_note: x.design_note || '' })), caption: j.caption, hashtags: Array.isArray(j.hashtags) ? j.hashtags : [], cta: j.cta || '' };
+      set((p) => { p.carousel = car; p.generating = false; });
+      setHelper(null); setView(0);
+    } catch {
+      setHelper({ ...helper, error: en ? 'Could not read this. Copy Claude’s whole answer (from { to }) and paste it again.' : 'Belum bisa dibaca. Salin seluruh jawaban Claude (dari { sampai }) lalu tempel lagi.' });
+    }
+  };
   const c = post.carousel;
   const generating = post.generating || busy[`post_${post.id}`];
   const set = (fn) => api.update((s) => { const p = s.content.posts.find((x) => x.id === postId); fn(p, s); return s; });
@@ -430,8 +458,31 @@ function PostModal({ postId, onClose, busy, run, writeCarousel, setErr }) {
             </>
           )}
           {!post.manual && (
+            <>
+            {!hasKey && c?.template && !helper && (
+              <div className="tip-box" style={{ marginTop: 12 }}><Wand2 size={16} /><span>{en
+                ? 'This is only a template (no AI key yet). Click Regenerate: you’ll get a ready prompt to paste into Claude, then paste the answer back here.'
+                : 'Ini baru template (belum ada API key). Klik Regenerate: kamu dapat prompt siap pakai untuk ditempel ke Claude, lalu tempel jawabannya kembali di sini.'}</span></div>
+            )}
+            {helper && (
+              <div className="claude-helper">
+                <b>{en ? 'Write it with Claude (free with your Claude account)' : 'Tulis dengan Claude (gratis pakai akun Claude-mu)'}</b>
+                <ol className="small">
+                  <li>{en ? 'Copy the prompt.' : 'Salin prompt-nya.'} <button className="btn sm black" onClick={async () => { try { await navigator.clipboard.writeText(helper.prompt); setHelper({ ...helper, copied: true }); } catch { /* */ } }}>{helper.copied ? (en ? 'Copied ✓' : 'Tersalin ✓') : (en ? 'Copy prompt' : 'Salin prompt')}</button></li>
+                  <li>{en ? 'Open ' : 'Buka '}<a href="https://claude.ai/new" target="_blank" rel="noreferrer">claude.ai</a>{en ? ', paste it and send.' : ', tempel, lalu kirim.'}</li>
+                  <li>{en ? 'Copy Claude’s whole answer and paste it below.' : 'Salin seluruh jawaban Claude, lalu tempel di bawah.'}</li>
+                </ol>
+                <textarea rows={4} value={helper.paste || ''} onChange={(e) => setHelper({ ...helper, paste: e.target.value, error: '' })} placeholder={en ? 'Paste Claude’s answer here…' : 'Tempel jawaban Claude di sini…'} />
+                {helper.error && <p className="small" style={{ color: '#C2397F', margin: 0 }}>{helper.error}</p>}
+                <div className="row-gap">
+                  <button className="btn primary" disabled={!helper.paste} onClick={applyPaste}>{en ? 'Use this version' : 'Pakai versi ini'}</button>
+                  <button className="btn ghost" onClick={() => setHelper(null)}>{en ? 'Cancel' : 'Batal'}</button>
+                </div>
+              </div>
+            )}
             <form className="improve" onSubmit={(e) => {
               e.preventDefault();
+              if (!hasKey) { setHelper({ prompt: claudePrompt(fb), paste: '' }); setFb(''); return; }
               set((p) => { p.generating = true; });
               run(`post_${post.id}`, () => writeCarousel(post.id, fb || 'Make it stronger and more engaging.').catch((er) => { setErr(er.message); set((p) => { p.generating = false; }); }));
               setFb('');
@@ -439,6 +490,7 @@ function PostModal({ postId, onClose, busy, run, writeCarousel, setErr }) {
               <input value={fb} onChange={(e) => setFb(e.target.value)} placeholder={t('improvePh')} />
               <button className="btn primary" disabled={!!generating}>{generating ? <Loader2 size={15} className="spin" /> : <Wand2 size={15} />} {fb ? t('improve') : t('regenerate')}</button>
             </form>
+            </>
           )}
           <div className="modal-foot">
             <button className="btn danger ghost" onClick={() => {

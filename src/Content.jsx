@@ -120,6 +120,7 @@ export default function Content() {
       const hard = [...s.content.ideas.map((i) => i.title), ...s.content.posts.map((p) => p.topic.title)];
       const opts = { apiKey: s.settings.anthropicKey, strategy: s.settings.strategies[brand], lang: s.settings.contentLang, count, avoid: avoidList(), hard, rejected: s.content.rejected, feedback: fb, brand };
       let list = s.settings.anthropicKey ? await aiTopics(opts) : templateTopics(opts);
+      if (!list.length) setErr(lang === 'en' ? 'You’ve seen every ready-made topic. Ask Claude in the chat for a new batch, or add your own key in Settings for unlimited AI ideas.' : 'Semua topik siap pakai sudah kamu lihat. Minta topik baru ke Claude di chat, atau isi API key di Pengaturan untuk ide AI tanpa batas.');
       api.update((st) => { st.content.ideas.push(...list.map((x) => ({ ...x, id: uid('i'), brand }))); return st; });
     } catch (e) { setErr(e.message || String(e)); }
   });

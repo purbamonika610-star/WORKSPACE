@@ -31,9 +31,9 @@ function useImg(k) {
   return u;
 }
 
-function Img({ k, className }) {
+function Img({ k, className, onRatio }) {
   const u = useImg(k);
-  return u ? <img src={u} className={className} alt="" draggable={false} /> : <div className={`${className} img-loading`} />;
+  return u ? <img src={u} className={className} alt="" draggable={false} onLoad={onRatio ? (e) => onRatio(e.currentTarget.naturalWidth / e.currentTarget.naturalHeight) : undefined} /> : <div className={`${className} img-loading`} />;
 }
 
 /** One designed slide. Sizes use container units so it works as a tiny grid tile or a big viewer. */
@@ -262,6 +262,7 @@ function IGPost({ post, idx, handle, prof, onBack, onPrev, onNext, onEdit }) {
   const [more, setMore] = useState(false);
   const [pop, setPop] = useState(false);
   const [dx, setDx] = useState(0);
+  const [ratio, setRatio] = useState(0.8);
   const start = useRef(null);
   const imgs = post.images || [];
   const c = post.carousel;
@@ -309,11 +310,11 @@ function IGPost({ post, idx, handle, prof, onBack, onPrev, onNext, onEdit }) {
           <MoreHorizontal size={20} />
         </div>
 
-        <div className="igp-media" onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerLeave={up} onDoubleClick={dbl}>
+        <div className="igp-media" style={imgs.length ? { aspectRatio: String(Math.min(1.91, Math.max(0.75, ratio))) } : undefined} onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerLeave={up} onDoubleClick={dbl}>
           <div className="igp-track" style={{ transform: `translateX(calc(${-i * 100}% + ${dx}px))`, transition: start.current != null ? 'none' : undefined }}>
             {Array.from({ length: n }, (_, k) => (
               <div className="igp-slide" key={k}>
-                {imgs.length ? <Img k={imgs[k]} className="ig-img" /> : <SlideArt post={post} i={k} pal={pal} handle={handle} />}
+                {imgs.length ? <Img k={imgs[k]} className="ig-img fit" onRatio={k === 0 ? setRatio : undefined} /> : <SlideArt post={post} i={k} pal={pal} handle={handle} />}
               </div>
             ))}
           </div>

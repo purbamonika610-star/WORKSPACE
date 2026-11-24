@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import {
-  ArrowLeft, Bell, BadgeCheck, Bookmark, ChevronLeft, ChevronRight, Clapperboard, EllipsisVertical, Grid3x3, Heart,
+  ArrowLeft, Bell, Maximize2, Minimize2, BadgeCheck, Bookmark, ChevronLeft, ChevronRight, Clapperboard, EllipsisVertical, Grid3x3, Heart,
   House, ImagePlus, Link2, MessageCircle, MoreHorizontal, Pencil, Search, Send, SquarePlus, SquareUser, UserPlus,
 } from 'lucide-react';
 import { fmtDate, todayStr, useStore } from './store.jsx';
@@ -105,6 +105,13 @@ export default function Feed({ posts, brand, handle, onEdit, onAddExisting }) {
   const [open, setOpen] = useState(null); // { id, idx }
   const [editing, setEditing] = useState(false);
   const [tab, setTab] = useState('grid');
+  const [full, setFull] = useState(false);
+  useEffect(() => {
+    if (!full) return;
+    const k = (e) => { if (e.key === 'Escape' && !document.querySelector('.igp')) setFull(false); };
+    window.addEventListener('keydown', k);
+    return () => window.removeEventListener('keydown', k);
+  }, [full]);
   const fileRef = useRef();
   const prof = { ...DEFAULT_PROFILES[brand], ...(state.content.profiles?.[brand] || {}) };
   const sorted = [...posts].sort((a, b) => (b.postDate || '').localeCompare(a.postDate || '') || b.createdAt - a.createdAt);
@@ -131,7 +138,9 @@ export default function Feed({ posts, brand, handle, onEdit, onAddExisting }) {
   const openIdx = open ? sorted.findIndex((p) => p.id === open.id) : -1;
 
   return (
-    <div className="feed-wrap">
+    <div className={`feed-wrap${full ? ' full' : ''}`}>
+      {full && <div className="phone-backdrop" onClick={() => setFull(false)} />}
+      {full && <button className="phone-close" onClick={() => setFull(false)}><Minimize2 size={16} /> {en ? 'Exit full screen' : 'Keluar layar penuh'}</button>}
       <div className="phone ig">
         <div className="ig-status"><b>9:41</b><span>●●● ▲ ▮</span></div>
         <div className="ig-topbar">
@@ -209,6 +218,7 @@ export default function Feed({ posts, brand, handle, onEdit, onAddExisting }) {
             ? 'This is how your profile will look. Tap a post to see it like on Instagram: swipe through every slide and read the caption. Drag one tile onto another to swap their posting dates. Upload your Canva exports on a post to replace the preview with your real design.'
             : 'Begini tampilan profilmu nanti. Klik satu post untuk melihatnya seperti di Instagram: geser tiap slide dan baca caption-nya. Seret satu kotak ke kotak lain untuk menukar tanggal posting. Upload hasil export Canva di post itu supaya preview diganti desain aslimu.'}
         </p>
+        <button className="btn full primary" onClick={() => setFull(true)}><Maximize2 size={15} /> {en ? 'View full screen' : 'Lihat layar penuh'}</button>
         <button className="btn full" onClick={() => setEditing(true)}><Pencil size={15} /> {en ? 'Edit profile' : 'Edit profil'}</button>
         <button className="btn full" onClick={() => fileRef.current.click()}><ImagePlus size={15} /> {en ? 'Add a post I already made' : 'Tambah post yang sudah ada'}</button>
         <input ref={fileRef} type="file" accept="image/*" multiple hidden onChange={(e) => { const f = [...e.target.files]; if (f.length) onAddExisting(f, todayStr()); e.target.value = ''; }} />

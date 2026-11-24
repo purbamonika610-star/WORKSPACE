@@ -235,7 +235,7 @@ nav button.on { background: var(--accent-soft); color: #5B3FC4; font-weight: 600
 .pl-headrow { font-weight: 600; }
 
 .feed-wrap { display: grid; grid-template-columns: minmax(0, 400px) 1fr; gap: 24px; align-items: start; }
-.phone { background: #fff; border-radius: 40px; border: 9px solid #17151C; box-shadow: 0 20px 50px rgba(30,34,60,.18); overflow: hidden; position: relative; height: min(820px, 86vh); display: flex; flex-direction: column; color: #111; }
+.phone { background: #fff; border-radius: 40px; border: 9px solid #17151C; box-shadow: 0 20px 50px rgba(30,34,60,.18); overflow: hidden; position: relative; height: clamp(470px, calc(100dvh - 196px), 860px); display: flex; flex-direction: column; color: #111; }
 .ig button { color: inherit; }
 .ig-status { display: flex; justify-content: space-between; padding: 8px 22px 2px; font-size: 12px; letter-spacing: .05em; }
 .ig-status span { font-size: 9px; opacity: .7; }
@@ -688,3 +688,18 @@ main { background: #fff; }
 .igp-edit-foot span { margin-right: auto; }
 .caption-edit { font-size: 13.5px; line-height: 1.5; resize: vertical; background: #FBFAFE; }
 .caption-tags { margin-top: 6px; font-size: 13px; color: #00376B; }
+
+@media (max-height: 800px) {
+  .ig-status { display: none; }
+  .igp { padding-top: 6px; }
+  .phone { border-width: 7px; border-radius: 32px; }
+  .ig-profile { padding-top: 0; }
+  .ig-ring { width: 72px; height: 72px; }
+  .ig-av { font-size: 25px; }
+  .ig-hl-c { width: 50px; height: 50px; font-size: 14px; }
+}
+
+.phone-backdrop { position: fixed; inset: 0; background: rgba(20,18,28,.55); backdrop-filter: blur(4px); z-index: 60; }
+.feed-wrap.full .phone { position: fixed; z-index: 61; top: 16px; left: 50%; transform: translateX(-50%); height: calc(100dvh - 32px); width: min(440px, calc(100vw - 32px)); }
+.feed-wrap.full .ig-status { display: flex; }
+.phone-close { position: fixed; z-index: 62; top: 16px; right: 16px; display: inline-flex; align-items: center; gap: 6px; background: #fff; border: 0; border-radius: 99px; padding: 8px 14px; font-weight: 600; font-size: 13px; cursor: pointer; box-shadow: var(--shadow); }

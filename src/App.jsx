@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { LayoutDashboard, FolderKanban, CalendarDays, Inbox, Settings as SettingsIcon, RefreshCw, Menu, X, CloudOff, Cloud } from 'lucide-react';
+import { LayoutDashboard, FolderKanban, CalendarDays, Inbox, Settings as SettingsIcon, RefreshCw, Menu, X, CloudOff, Cloud, MonitorDown } from 'lucide-react';
 import { allTasks, projectProgress, StoreProvider, useStore } from './store.jsx';
 import { tx } from './i18n.js';
 import { catOf } from './ui.jsx';
@@ -93,6 +93,31 @@ function useReminders() {
   return [toast, () => setToast(null)];
 }
 
+function InstallButton({ lang }) {
+  const [can, setCan] = useState(!!window.__installPrompt);
+  useEffect(() => {
+    const on = () => setCan(true);
+    const off = () => { window.__installPrompt = null; setCan(false); };
+    window.addEventListener('mw-installable', on);
+    window.addEventListener('appinstalled', off);
+    return () => { window.removeEventListener('mw-installable', on); window.removeEventListener('appinstalled', off); };
+  }, []);
+  if (!can || window.matchMedia('(display-mode: standalone)').matches) return null;
+  const install = async () => {
+    const p = window.__installPrompt;
+    if (!p) return;
+    p.prompt();
+    const r = await p.userChoice.catch(() => null);
+    if (r?.outcome === 'accepted') { window.__installPrompt = null; setCan(false); }
+  };
+  return (
+    <div className="gsync install" onClick={install}>
+      <MonitorDown size={16} />
+      <div className="grow"><div className="small"><b>{lang === 'en' ? 'Install on desktop' : 'Pasang di desktop'}</b></div><div className="muted tiny">{lang === 'en' ? 'Open like an app' : 'Buka seperti aplikasi'}</div></div>
+    </div>
+  );
+}
+
 function Shell() {
   const { state, api, t, lang } = useStore();
   const [view, setView] = useState(() => localStorage.getItem('mw-view') || 'dashboard');
@@ -152,6 +177,7 @@ function Shell() {
           <button className={view === 'settings' ? 'on' : ''} onClick={() => go('settings')}><SettingsIcon size={18} /> {t('settings')}</button>
         </nav>
         <div className="side-foot">
+          <InstallButton lang={lang} />
           <div className={`gsync${google.connected ? ' on' : ''}`} onClick={() => (google.connected ? google.sync() : state.settings.googleClientId ? google.connect() : go('settings'))}>
             {google.connected ? <Cloud size={16} /> : <CloudOff size={16} />}
             <div className="grow">

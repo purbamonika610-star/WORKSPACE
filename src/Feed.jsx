@@ -21,7 +21,7 @@ export const PALETTES = [
 export const palFor = (p) => PALETTES[(p.id || '').split('').reduce((a, c) => a + c.charCodeAt(0), 0) % PALETTES.length];
 
 const DEFAULT_PROFILES = {
-  elevara: { name: 'Elevara', title: 'Virtual Assistant & Social Media Agency', bio: 'We take the busywork off your plate 🤍\nVirtual assistants · Social media management\nDM “ELEVARA” for a free strategy call ↓', link: 'elevara.agency', followers: '1,248', following: '312' },
+  elevara: { name: 'Elevara', title: 'Creative & Business Support', bio: 'We take the busywork off your plate 🤍\nVirtual assistants · Social media management\nDM “ELEVARA” for a free strategy call ↓', link: 'elevara.agency', followers: '1,248', following: '312' },
   sister: { name: "Sister's business", title: 'Bali', bio: 'Made with love in Bali 🌿', link: '', followers: '860', following: '210' },
   personal: { name: 'Monika', title: 'Creator', bio: 'Building things I love ✨', link: '', followers: '540', following: '380' },
 };

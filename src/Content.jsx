@@ -10,7 +10,7 @@ import Feed, { SlideArt, palFor } from './Feed.jsx';
 import { IgPostStatus, useIgAutoPrepare } from './Instagram.jsx';
 
 const BRANDS = {
-  elevara: { name: 'Elevara', handle: 'elevara.agency', cat: 'elevara' },
+  elevara: { name: 'Elevara', handle: 'elevara.workspace', cat: 'elevara' },
   sister: { name: { en: "Sister's business", id: 'Bisnis kakak/adik' }, handle: 'sister.bali', cat: 'sister' },
   personal: { name: { en: 'Personal brand', id: 'Personal brand' }, handle: 'monika', cat: 'personal' },
 };
@@ -329,7 +329,7 @@ Reply with ONLY this JSON, no other text:
         <div className="post-left">
           <div className="viewer">
             {total ? <ImgThumb k={post.images[Math.min(view, total - 1)]} className="viewer-img" /> : (
-              c ? <SlideArt post={post} i={Math.min(view, c.slides.length - 1)} pal={palFor(post)} handle={BRANDS[post.brand]?.handle || 'elevara.agency'} />
+              c ? <SlideArt post={post} i={Math.min(view, c.slides.length - 1)} pal={palFor(post)} handle={BRANDS[post.brand]?.handle || 'elevara.workspace'} />
                 : <div className="slide-preview"><Loader2 className="spin" /></div>
             )}
             <button className="nav l" onClick={() => setView((v) => Math.max(0, v - 1))}><ChevronLeft size={18} /></button>

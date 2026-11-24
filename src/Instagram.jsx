@@ -4,6 +4,8 @@ import { getCfg, igAction, igStatus, igUpload } from './cloud.js';
 import { getImg } from './imgdb.js';
 import { fmtDate } from './store.jsx';
 
+export const ACCOUNT = 'elevara.workspace';
+
 // Shared Instagram status (one fetch for the whole app).
 let shared = { loading: true, connected: false, published: {} };
 const subs = new Set();
@@ -75,9 +77,9 @@ export function useIgAutoPrepare(posts, api) {
   const ig = useIg();
   const key = posts.filter((p) => p.status === 'ready').map((p) => p.id + (p.images || []).join(',') + (p.igSig || '')).join('|');
   useEffect(() => {
-    if (!ig.connected) return;
+    if (!getCfg()?.code) return;
     posts.filter((p) => p.status === 'ready' && p.images?.length && p.igSig !== p.images.join(',')).forEach((p) => prepareForIg(p, api.update).catch(() => {}));
-  }, [ig.connected, key]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [ig.loading, key]); // eslint-disable-line react-hooks/exhaustive-deps
 }
 
 /** One-line status for a post. */
@@ -88,18 +90,19 @@ export function IgPostStatus({ post, lang }) {
   if (ig.loading) return null;
   const pub = ig.published[post.id];
   if (pub?.state === 'published') return <div className="ig-st ok"><CheckCircle2 size={14} /> {en ? 'Published on Instagram' : 'Sudah terbit di Instagram'} {pub.permalink && <a href={pub.permalink} target="_blank" rel="noreferrer">{en ? 'View' : 'Lihat'} ↗</a>}</div>;
+  if (pub?.state === 'scheduled') return <div className="ig-st ok"><CheckCircle2 size={14} /> {en ? `Scheduled on Instagram @${ACCOUNT} · ` : `Sudah terjadwal di Instagram @${ACCOUNT} · `}{fmtDate(post.postDate, lang, { weekday: 'short', day: 'numeric', month: 'short' })} {post.postTime}</div>;
   if (pub?.state === 'publishing') return <div className="ig-st"><Loader2 size={14} className="spin" /> {en ? 'Publishing now…' : 'Sedang diterbitkan…'}</div>;
   if (pub?.state === 'failed') return (
     <div className="ig-st bad"><TriangleAlert size={14} /> <span className="grow">{en ? 'Could not publish: ' : 'Gagal terbit: '}{pub.error}</span>
       <button className="btn sm" disabled={retrying} onClick={async () => { setRetrying(true); try { await igAction(getCfg().code, 'retry', { post_id: post.id }); await refreshIg(); } finally { setRetrying(false); } }}><RefreshCw size={13} /> {en ? 'Try again' : 'Coba lagi'}</button>
     </div>
   );
-  if (!ig.connected) return <div className="ig-st muted"><IgIcon size={14} /> {en ? 'Connect Instagram in Settings to auto-post.' : 'Sambungkan Instagram di Pengaturan supaya bisa auto-post.'}</div>;
+  if (ig.noSync) return <div className="ig-st muted"><IgIcon size={14} /> {en ? 'Turn on device sync in Settings to auto-post.' : 'Nyalakan Sinkron device di Pengaturan supaya bisa auto-post.'}</div>;
   const when = `${fmtDate(post.postDate, lang, { weekday: 'short', day: 'numeric', month: 'short' })} ${post.postTime || ''}`;
   if (post.status !== 'ready') return <div className="ig-st muted"><Send size={14} /> {en ? `Mark it Ready (with your slides uploaded) to auto-post on ${when}.` : `Tandai Ready (dan upload slide-nya) supaya otomatis terbit ${when}.`}</div>;
   if (!post.images?.length) return <div className="ig-st bad"><TriangleAlert size={14} /> {en ? 'Upload your Canva slides first, otherwise nothing can be posted.' : 'Upload slide Canva-nya dulu, kalau tidak ada gambar post tidak bisa terbit.'}</div>;
   if (post.igSig !== post.images.join(',')) return <div className="ig-st"><Loader2 size={14} className="spin" /> {en ? 'Preparing slides for Instagram…' : 'Menyiapkan slide untuk Instagram…'}</div>;
-  return <div className="ig-st ok"><Send size={14} /> {en ? `Will post automatically to @${ig.username} on ${when}` : `Akan terbit otomatis di @${ig.username} · ${when}`}</div>;
+  return <div className="ig-st ok"><Send size={14} /> {en ? `Slides ready. Claude will schedule it on @${ACCOUNT} for ${when}` : `Slide siap. Claude akan menjadwalkannya di @${ACCOUNT} · ${when}`}</div>;
 }
 
 export function IgCard({ lang }) {
@@ -122,6 +125,20 @@ export function IgCard({ lang }) {
       <h2 style={{ display: 'flex', alignItems: 'center', gap: 8 }}><IgIcon size={18} /> {en ? 'Instagram auto-post' : 'Auto-post Instagram'}</h2>
       {ig.noSync ? (
         <p className="muted small">{en ? 'Turn on device sync first (card above). Auto-posting runs from your synced workspace.' : 'Nyalakan "Sinkron device" dulu (kartu di atas). Auto-post berjalan dari workspace yang tersinkron.'}</p>
+      ) : !ig.connected ? (
+        <>
+          <p className="small" style={{ margin: '0 0 6px' }}>✅ {en ? 'Auto-post is on for' : 'Auto-post aktif untuk'} <b>@{ACCOUNT}</b></p>
+          <p className="muted small">{en
+            ? 'Mark a post Ready with its Canva slides uploaded. Claude checks your workspace every 2 hours and schedules Ready posts on Instagram for their date and time. Each post shows its status.'
+            : 'Tandai post Ready dan upload slide Canva-nya. Claude mengecek workspace-mu tiap 2 jam dan menjadwalkan post Ready di Instagram sesuai tanggal & jamnya. Status tiap post kelihatan di post-nya.'}</p>
+          <details className="small muted"><summary>{en ? 'Connect directly with a Meta token (optional)' : 'Sambungkan langsung pakai token Meta (opsional)'}</summary>
+            <div className="row-gap" style={{ marginTop: 8 }}>
+              <input type="password" value={token} onChange={(e) => setToken(e.target.value)} placeholder="IGAA…" style={{ flex: 1 }} />
+              <button className="btn" disabled={busy || token.length < 20} onClick={connect}>{en ? 'Connect' : 'Sambungkan'}</button>
+            </div>
+            {err && <p className="small" style={{ color: '#C2397F' }}>{err}</p>}
+          </details>
+        </>
       ) : ig.connected ? (
         <>
           <p className="small" style={{ margin: '0 0 6px' }}>✅ {en ? 'Connected to' : 'Tersambung ke'} <b>@{ig.username}</b></p>

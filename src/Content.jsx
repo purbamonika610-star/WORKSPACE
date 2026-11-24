@@ -381,7 +381,8 @@ Reply with ONLY this JSON, no other text:
                 ))}
               </ol>
               <div className="row-gap" style={{ justifyContent: 'space-between' }}><h4 style={{ margin: 0 }}>{t('caption')}</h4><CopyBtn text={`${c.caption}\n\n${c.hashtags.join(' ')}`} t={t} /></div>
-              <div className="caption">{c.caption}<div className="tags">{c.hashtags.join(' ')}</div></div>
+              <textarea className="caption-edit" rows={8} value={c.caption} onChange={(e) => set((p) => { p.carousel.caption = e.target.value; })} />
+              <input className="caption-tags" value={c.hashtags.join(' ')} onChange={(e) => set((p) => { p.carousel.hashtags = e.target.value.split(' ').map((h) => (h && !h.startsWith('#') ? `#${h}` : h)); })} placeholder="#hashtags" />
             </>
           )}
           {!post.manual && (

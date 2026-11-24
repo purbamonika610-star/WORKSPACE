@@ -234,7 +234,17 @@ export default function Feed({ posts, brand, handle, onEdit, onAddExisting }) {
 }
 
 function IGPost({ post, idx, handle, prof, onBack, onPrev, onNext, onEdit }) {
-  const { lang } = useStore();
+  const { lang, api } = useStore();
+  const [edit, setEdit] = useState(null); // { caption, tags }
+  const saveCaption = () => {
+    const hashtags = edit.tags.split(/[\s,]+/).filter(Boolean).map((h) => (h.startsWith('#') ? h : `#${h}`));
+    api.update((s) => {
+      const p = s.content.posts.find((x) => x.id === post.id);
+      p.carousel = { slides: [], cta: '', ...(p.carousel || {}), caption: edit.caption, hashtags };
+      return s;
+    });
+    setEdit(null); setMore(true);
+  };
   const en = lang === 'en';
   const [i, setI] = useState(0);
   const [liked, setLiked] = useState(false);
@@ -247,9 +257,10 @@ function IGPost({ post, idx, handle, prof, onBack, onPrev, onNext, onEdit }) {
   const c = post.carousel;
   const n = imgs.length || c?.slides?.length || 1;
   const pal = palFor(post);
-  useEffect(() => { setI(0); setMore(false); setLiked(false); setSaved(false); }, [post.id]);
+  useEffect(() => { setI(0); setMore(false); setLiked(false); setSaved(false); setEdit(null); }, [post.id]);
   useEffect(() => {
     const k = (e) => {
+      if (/INPUT|TEXTAREA/.test(e.target.tagName)) return;
       if (e.key === 'ArrowRight') setI((v) => Math.min(n - 1, v + 1));
       else if (e.key === 'ArrowLeft') setI((v) => Math.max(0, v - 1));
       else if (e.key === 'Escape') onBack();
@@ -312,11 +323,30 @@ function IGPost({ post, idx, handle, prof, onBack, onPrev, onNext, onEdit }) {
 
         <div className="igp-text">
           <b>{likes.toLocaleString()} likes</b>
-          <div className={`igp-cap${more ? ' open' : ''}`}>
-            <b>{handle}</b> {caption.split('\n').map((l, k) => <span key={k}>{l}<br /></span>)}
-            {tags.length > 0 && <span className="igp-tags">{tags.join(' ')}</span>}
-          </div>
-          {!more && caption.length > 90 && <button className="igp-more" onClick={() => setMore(true)}>{en ? 'more' : 'selengkapnya'}</button>}
+          {edit ? (
+            <div className="igp-edit">
+              <label>Caption</label>
+              <textarea rows={9} value={edit.caption} autoFocus onChange={(e) => setEdit({ ...edit, caption: e.target.value })} onKeyDown={(e) => e.stopPropagation()} />
+              <label>Hashtags</label>
+              <textarea rows={2} value={edit.tags} onChange={(e) => setEdit({ ...edit, tags: e.target.value })} onKeyDown={(e) => e.stopPropagation()} placeholder="#elevara #virtualassistant" />
+              <div className="igp-edit-foot">
+                <span className="muted small">{edit.caption.length}/2200</span>
+                <button className="btn sm ghost" onClick={() => setEdit(null)}>{en ? 'Cancel' : 'Batal'}</button>
+                <button className="btn sm primary" onClick={saveCaption}>{en ? 'Save' : 'Simpan'}</button>
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className={`igp-cap${more ? ' open' : ''}`} onDoubleClick={() => setEdit({ caption, tags: tags.join(' ') })}>
+                <b>{handle}</b> {caption.split('\n').map((l, k) => <span key={k}>{l}<br /></span>)}
+                {tags.length > 0 && <span className="igp-tags">{tags.join(' ')}</span>}
+              </div>
+              <div className="igp-cap-actions">
+                {!more && caption.length > 90 && <button className="igp-more" onClick={() => setMore(true)}>{en ? 'more' : 'selengkapnya'}</button>}
+                <button className="igp-editbtn" onClick={() => setEdit({ caption, tags: tags.join(' ') })}><Pencil size={12} /> {en ? 'Edit caption' : 'Edit caption'}</button>
+              </div>
+            </>
+          )}
           <div className="igp-cmt">{en ? `View all ${Math.round(likes / 9)} comments` : `Lihat semua ${Math.round(likes / 9)} komentar`}</div>
           <div className="igp-date">{when}</div>
         </div>

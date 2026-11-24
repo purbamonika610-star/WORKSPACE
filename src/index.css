@@ -678,3 +678,13 @@ main { background: #fff; }
 .slide-preview { list-style: none; margin: 4px 0 0; padding: 10px 12px; background: #F7F6FB; border-radius: 12px; display: flex; flex-direction: column; gap: 5px; font-size: 13px; line-height: 1.4; }
 .slide-preview li { display: flex; gap: 8px; align-items: baseline; }
 .slide-preview li span { flex: none; min-width: 42px; font-size: 10.5px; font-weight: 700; text-transform: uppercase; color: #8B6FE0; }
+
+.igp-cap-actions { display: flex; gap: 12px; align-items: center; margin-top: 2px; }
+.igp-editbtn { display: inline-flex; align-items: center; gap: 4px; background: #F1ECFD; color: #5B3FC4 !important; border: 0; border-radius: 99px; padding: 3px 10px; font-size: 11.5px; font-weight: 700; cursor: pointer; }
+.igp-edit { display: flex; flex-direction: column; gap: 5px; margin-top: 6px; }
+.igp-edit label { font-size: 11px; font-weight: 700; color: #8E8E8E; text-transform: uppercase; letter-spacing: .06em; }
+.igp-edit textarea { font-size: 13px; line-height: 1.45; padding: 9px 10px; resize: vertical; }
+.igp-edit-foot { display: flex; gap: 6px; align-items: center; justify-content: flex-end; }
+.igp-edit-foot span { margin-right: auto; }
+.caption-edit { font-size: 13.5px; line-height: 1.5; resize: vertical; background: #FBFAFE; }
+.caption-tags { margin-top: 6px; font-size: 13px; color: #00376B; }

@@ -310,7 +310,7 @@ CONTENT PILLARS (rotate):
  3. Academic Services (20%) — study systems, presentations, research & writing help.
  4. How Elevara works / behind the scenes / trust (20%) — process, team, results, FAQs.
 TONE: Professional, warm, clear and confident. Short sentences. No jargon. Helpful first, salesy last.
-CAROUSEL STRUCTURE (7–9 slides): 1) Scroll-stopping hook  2) The problem / why it matters  3–6) Practical value, one idea per slide  7) Mini proof or example  8) Summary  9) CTA.
+CAROUSEL STRUCTURE (5 slides): 1) Hook that names the audience's problem  2–4) Three creative, practical solutions, one per slide  5) CTA that shows exactly what problem Elevara solves.
 CTA OPTIONS: "DM us ELEVARA", "Book a free call — link in bio", "Save this for later", "Share with a founder friend".
 VISUAL STYLE (designed manually in Canva by Monika): clean, white space, soft brand colors, max ~25 words per slide.
 POSTING: 3x per week (carousel focus), captions 80–150 words with a hook line, value, CTA and 5–8 hashtags.`,

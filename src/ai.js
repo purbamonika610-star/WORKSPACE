@@ -2,6 +2,7 @@
 // Uses Claude when an Anthropic API key is set; otherwise falls back to built-in templates.
 // Text only: Monika designs every carousel manually in Canva.
 import Anthropic from '@anthropic-ai/sdk';
+import { LIBRARY, libraryFor } from './library.js';
 
 const MODEL = 'claude-opus-5-5';
 
@@ -88,7 +89,7 @@ Write all content in ${LANG_NAME[lang] || 'English'}.`;
 }
 
 export async function aiTopics({ apiKey, strategy, lang, count, avoid, feedback }) {
-  const user = `Suggest ${count} fresh Instagram carousel topic ideas that fit the strategy and rotate across the content pillars.
+  const user = `Suggest ${count} fresh Instagram carousel topic ideas (each one = a clear audience problem with 3 solutions, 5 slides) that fit the strategy and rotate across the content pillars.
 Each idea: a clear title, the slide-1 hook line, the pillar it belongs to, one sentence on why it will work for this audience, the best format (e.g. "Carousel 8 slides", "Reel 20s + carousel"), and a short execution plan: 3–5 concrete steps for how to make and run it this week (research, script, design in Canva, film/edit, post & engage).
 ${feedback ? `Owner feedback to apply: ${feedback}\n` : ''}Do not repeat or closely resemble any of these topics:
 ${avoid.slice(-60).map((x) => `- ${x}`).join('\n') || '- (none yet)'}`;
@@ -102,7 +103,7 @@ Title: ${topic.title}
 Hook: ${topic.hook}
 Pillar: ${topic.pillar}
 
-Follow the strategy's carousel structure (7–9 slides, one idea per slide, short punchy copy that fits a slide). For each slide give a headline, body text and a short Canva design note (layout, emphasis, visual idea).
+Use exactly 5 slides: slide 1 = a scroll-stopping hook that names the audience's problem; slides 2–4 = three concrete, creative solutions (one per slide); slide 5 = CTA that states clearly what problem we solve for them. Short punchy copy (max ~25 words per slide). For each slide give a headline, body text and a short Canva design note (layout, emphasis, visual idea).
 Then write the full caption (hook line, value, CTA), a list of 5–8 hashtags (with #), and the main CTA.${
     feedback && previous ? `\n\nThis is a revision. The previous version was:\n${JSON.stringify(previous)}\n\nOwner feedback to apply: ${feedback}` : ''
   }`;
@@ -153,34 +154,37 @@ const BANK = {
   ],
 };
 
+const PLAN5 = ['Read the 5-slide script and adjust any words to your voice (10 min)', 'Design the 5 slides manually in Canva (45–60 min)', 'Review the caption & hashtags the day before', 'Post at your usual time and reply to every comment in the first hour', 'Share slide 1 to Stories with a poll or question sticker'];
+
 export function templateTopics({ brand, count, avoid }) {
   const used = new Set(avoid.map((x) => x.toLowerCase()));
-  const pool = (BANK[brand] || BANK.elevara).filter(([t]) => !used.has(t.toLowerCase()));
-  const shuffled = [...pool].sort(() => Math.random() - 0.5).slice(0, count);
-  return shuffled.map(([title, hook, pillar]) => ({
-    title, hook, pillar,
-    why: `Fits the "${pillar}" pillar and gives practical value people want to save.`,
-    format: 'Carousel, 8 slides',
-    plan: ['Write the script from the generated slides (15 min)', 'Design the 8 slides manually in Canva (60–90 min)', 'Review captions & hashtags the day before', 'Post at your usual time, reply to every comment in the first hour', 'Share to Stories with a poll or question sticker'],
+  const lib = Object.values(LIBRARY[brand] || LIBRARY.elevara);
+  const pool = lib.filter((x) => !used.has(x.title.toLowerCase()));
+  const list = (pool.length ? pool : lib).slice().sort(() => Math.random() - 0.5).slice(0, count);
+  return list.map((x) => ({
+    title: x.title, hook: x.hook, pillar: x.pillar,
+    why: `Problem it solves: ${x.problem}`,
+    format: 'Carousel, 5 slides',
+    preview: x.carousel.slides.map((sl) => sl.headline),
+    plan: PLAN5,
   }));
 }
 
-export function templateCarousel({ topic }) {
+export function templateCarousel({ topic, brand }) {
+  const hit = libraryFor(brand, topic.title);
+  if (hit) return { ...structuredClone(hit.carousel), template: true, library: true };
   const slides = [
-    { headline: topic.hook, body: topic.title, design_note: 'Cover: big bold hook, lots of white space, brand color accent.' },
-    { headline: 'Why this matters', body: `If you ignore this, it costs you time, clients or growth. Let's fix it.`, design_note: 'Short problem statement, one icon.' },
-    { headline: 'Step 1', body: 'Write the first practical tip here — one clear action.', design_note: 'Number "1" large on the left, text on the right.' },
-    { headline: 'Step 2', body: 'Second practical tip — keep it under 25 words.', design_note: 'Same layout as slide 3 for consistency.' },
-    { headline: 'Step 3', body: 'Third practical tip — add a quick example.', design_note: 'Same layout; highlight the example in a soft box.' },
-    { headline: 'Quick example', body: 'Show a mini before/after or a real situation.', design_note: 'Two-column before/after.' },
-    { headline: 'Recap', body: '1. … 2. … 3. … Save this so you don\'t forget.', design_note: 'Checklist style.' },
-    { headline: 'Need help with this?', body: 'DM us "ELEVARA" or book a free call — link in bio.', design_note: 'CTA slide: logo, handle, button-style CTA.' },
+    { headline: topic.hook, body: `${topic.title}: here’s what’s really going wrong, and how to fix it.`, design_note: 'Cover: hook in big bold type, highlight the problem word in brand color, lots of white space.' },
+    { headline: 'Solution 1', body: 'The first fix: one clear action your audience can take today.', design_note: 'Big number “1” on the left, bold headline, 2 short lines.' },
+    { headline: 'Solution 2', body: 'The second fix: keep it under 25 words.', design_note: 'Same layout, number “2”.' },
+    { headline: 'Solution 3', body: 'The third fix: add a quick example.', design_note: 'Same layout, number “3”.' },
+    { headline: 'We solve this for you.', body: 'Say exactly what problem you solve, then: DM us or book a free call (link in bio).', design_note: 'CTA: what we solve in bold, logo + handle, button-style CTA.' },
   ];
   return {
     slides,
-    caption: `${topic.hook}\n\n${topic.title} — here's a simple way to get it right without overthinking it. Swipe through, save it for later, and send it to someone who needs it.\n\nWant us to handle it for you? DM "ELEVARA" 💬`,
-    hashtags: ['#elevara', '#smallbusinesstips', '#contentstrategy', '#virtualassistant', '#businessgrowth', '#instagramtips'],
-    cta: 'DM "ELEVARA" or book a free call (link in bio)',
+    caption: `${topic.hook}\n\n${topic.title}: three simple fixes in this post. Swipe through, save it for later, and send it to someone who needs it.\n\nWant us to handle it for you? DM us 💬`,
+    hashtags: ['#smallbusinesstips', '#contentstrategy', '#businessgrowth', '#instagramtips'],
+    cta: 'DM us or book a free call (link in bio)',
     template: true,
   };
 }

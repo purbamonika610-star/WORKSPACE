@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { COMPANY_SUBS, buildInterviewTasks, buildSeedProjects, buildThesisProject, DEFAULT_STRATEGIES, uid } from './seed.js';
 import { makeT, tx } from './i18n.js';
+import { libraryFor } from './library.js';
 
 const KEY = 'monika-workspace-v1';
 // Google OAuth Client ID (public identifier, not a secret).
@@ -11,7 +12,7 @@ export function initialState() {
     version: 1,
     lang: 'id',
     projects: [...buildSeedProjects(), buildThesisProject()],
-    migrations: ['interview-2026-11-24', 'thesis-project', 'interview-pdf', 'company-research'],
+    migrations: ['interview-2026-11-24', 'thesis-project', 'interview-pdf', 'company-research', 'carousel-5'],
     practice: {},
     events: [{ id: uid('e'), interviewLumi: true, title: '🎯 Interview PA – Lumi Advertising (Zoom)', date: '2026-11-24', time: '10:15', endTime: '11:00', reminder: '60', category: 'career', notes: 'Zoom · 30–45 min · Alvina Global Partners', isDeadline: true, updatedAt: Date.now() }],
     activity: [{ id: uid('a'), ts: Date.now(), text: { en: 'Workspace created with your 4 projects', id: 'Workspace dibuat dengan 4 project kamu' } }],
@@ -80,6 +81,23 @@ function migrate(st) {
       if (/Alvina/i.test(title) && !t.guide) { t.guide = { type: 'company' }; if (!t.subtasks?.some((x) => x.done)) t.subtasks = COMPANY_SUBS(); t.updatedAt = Date.now(); }
     }
     st.migrations.push('company-research');
+  }
+  if (!done.has('carousel-5')) {
+    const strat = st.settings.strategies || {};
+    if (strat.elevara) strat.elevara = strat.elevara.replace(/CAROUSEL STRUCTURE \(7–9 slides\):[^\n]*/, "CAROUSEL STRUCTURE (5 slides): 1) Hook that names the audience's problem  2–4) Three creative, practical solutions, one per slide  5) CTA that shows exactly what problem Elevara solves.");
+    const c = st.content || {};
+    (c.ideas || []).forEach((i) => {
+      const hit = libraryFor(i.brand || c.brand, i.title);
+      if (hit && !i.preview) Object.assign(i, { preview: hit.carousel.slides.map((x) => x.headline), why: `Problem it solves: ${hit.problem}`, format: 'Carousel, 5 slides' });
+    });
+    (c.posts || []).forEach((p) => {
+      const hit = libraryFor(p.brand, p.topic?.title);
+      if (hit && p.status === 'draft' && p.carousel && p.carousel.slides?.length !== 5) {
+        p.carousel = { ...structuredClone(hit.carousel), template: true, library: true };
+        p.topic = { ...p.topic, format: 'Carousel, 5 slides' };
+      }
+    });
+    st.migrations.push('carousel-5');
   }
   if (!st.settings.googleClientId) st.settings.googleClientId = GOOGLE_CLIENT_ID;
   return st;

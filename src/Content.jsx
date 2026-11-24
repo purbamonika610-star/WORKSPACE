@@ -142,7 +142,7 @@ export default function Content() {
   const writeCarousel = async (postId, fb, fresh) => {
     const s = api.get();
     const post = s.content.posts.find((p) => p.id === postId) || fresh;
-    const opts = { apiKey: s.settings.anthropicKey, strategy: s.settings.strategies[post.brand], lang: s.settings.contentLang, topic: post.topic, feedback: fb, previous: post.carousel };
+    const opts = { apiKey: s.settings.anthropicKey, strategy: s.settings.strategies[post.brand], lang: s.settings.contentLang, topic: post.topic, feedback: fb, previous: post.carousel, brand: post.brand };
     const carousel = s.settings.anthropicKey ? await aiCarousel(opts) : templateCarousel(opts);
     api.update((st) => { const p = st.content.posts.find((x) => x.id === postId); if (p) { p.carousel = carousel; p.generating = false; } return st; });
   };
@@ -229,6 +229,9 @@ export default function Content() {
                 <p className="hook">“{idea.hook}”</p>
                 <p className="muted small">{idea.why}</p>
                 {(idea.format || idea.trend) && <div className="row-gap">{idea.trend && <Pill color="#C2397F" bg="#FCEBF3">🔥 {lang === 'en' ? 'Trend' : 'Tren'} {idea.date ? fmtDate(idea.date, lang) : ''}</Pill>}{idea.format && <span className="fmt-chip">{idea.format}</span>}</div>}
+                {idea.preview?.length > 0 && (
+                  <ol className="slide-preview">{idea.preview.map((h, i) => <li key={i}><span>{i === 0 ? 'Hook' : i === 4 ? 'CTA' : `Fix ${i}`}</span>{h}</li>)}</ol>
+                )}
                 {idea.plan?.length > 0 && (
                   <details className="plan">
                     <summary>{lang === 'en' ? 'How to run this' : 'Cara menjalankannya'}</summary>
@@ -352,11 +355,11 @@ function PostModal({ postId, onClose, busy, run, writeCarousel, setErr }) {
 
 ${state.settings.strategies[post.brand]}
 
-Write a complete Instagram carousel (7–9 slides, one idea per slide, max ~25 words per slide) in ${state.settings.contentLang === 'id' ? 'Bahasa Indonesia' : 'English'}.
+Write a complete Instagram carousel with exactly 5 slides: slide 1 = scroll-stopping hook about the audience's problem; slides 2–4 = three creative, concrete solutions (one per slide); slide 5 = CTA that shows what problem we solve. Max ~25 words per slide. Write it in ${state.settings.contentLang === 'id' ? 'Bahasa Indonesia' : 'English'}.
 Topic: ${post.topic?.title || ''}
 Hook: ${post.topic?.hook || ''}
 Pillar: ${post.topic?.pillar || ''}
-${post.carousel && !post.carousel.template ? `\nThis is a revision of the current version:\n${JSON.stringify({ slides: post.carousel.slides, caption: post.carousel.caption })}\n` : ''}${feedback ? `\nMy feedback to apply: ${feedback}\n` : ''}
+${post.carousel && (!post.carousel.template || post.carousel.library) ? `\nThis is a revision of the current version:\n${JSON.stringify({ slides: post.carousel.slides, caption: post.carousel.caption })}\n` : ''}${feedback ? `\nMy feedback to apply: ${feedback}\n` : ''}
 I design every slide by hand in Canva, so give each slide a short Canva design note (layout, emphasis, visual idea).
 
 Reply with ONLY this JSON, no other text:
@@ -459,7 +462,7 @@ Reply with ONLY this JSON, no other text:
           )}
           {!post.manual && (
             <>
-            {!hasKey && c?.template && !helper && (
+            {!hasKey && c?.template && !c?.library && !helper && (
               <div className="tip-box" style={{ marginTop: 12 }}><Wand2 size={16} /><span>{en
                 ? 'This is only a template (no AI key yet). Click Regenerate: you’ll get a ready prompt to paste into Claude, then paste the answer back here.'
                 : 'Ini baru template (belum ada API key). Klik Regenerate: kamu dapat prompt siap pakai untuk ditempel ke Claude, lalu tempel jawabannya kembali di sini.'}</span></div>

@@ -6,6 +6,7 @@ import { uid } from './seed.js';
 import { delImg, imgUrl, putImg } from './imgdb.js';
 import { Modal, Pill } from './ui.jsx';
 import SocialHub from './Social.jsx';
+import Feed, { SlideArt, palFor } from './Feed.jsx';
 
 const BRANDS = {
   elevara: { name: 'Elevara', handle: 'elevara.agency', cat: 'elevara' },
@@ -20,14 +21,6 @@ const STATUSES = [
   ['posted', 'stPosted', '#2F9E6A', '#E4F5EC'],
 ];
 const stInfo = (s) => STATUSES.find((x) => x[0] === s) || STATUSES[0];
-const TILE_THEMES = [
-  { bg: '#F4EEE6', fg: '#4A1414' },
-  { bg: '#2B2523', fg: '#FFFFFF' },
-  { bg: '#F4EEE6', fg: '#B3412A' },
-  { bg: '#9E3A24', fg: '#FFF6EE' },
-  { bg: '#1E1B1A', fg: '#F4EEE6' },
-  { bg: '#EDE4F7', fg: '#3D2470' },
-];
 
 function useAsync() {
   const [busy, setBusy] = useState({});
@@ -79,18 +72,6 @@ function ImgThumb({ k, className, alt = '' }) {
   const [u, setU] = useState(null);
   useEffect(() => { let on = true; imgUrl(k).then((x) => on && setU(x)); return () => { on = false; }; }, [k]);
   return u ? <img src={u} className={className} alt={alt} draggable={false} /> : <div className={`${className} img-loading`} />;
-}
-
-function TypoTile({ post, idx, brand }) {
-  const th = TILE_THEMES[idx % TILE_THEMES.length];
-  const head = post.carousel?.slides?.[0]?.headline || post.topic.hook || post.topic.title;
-  return (
-    <div className="typo-tile" style={{ background: th.bg, color: th.fg }}>
-      <div className="tt-top"><span>{BRANDS[brand].name === 'Elevara' ? 'ELEVARA' : BRANDS[brand].handle.toUpperCase()}</span><span>{post.topic.pillar?.toUpperCase()}</span></div>
-      <div className="tt-head">{head}</div>
-      <div className="tt-bot"><span>{post.topic.title}</span><ArrowRight size={16} /></div>
-    </div>
-  );
 }
 
 export default function Content() {
@@ -252,7 +233,7 @@ export default function Content() {
         </>
       )}
 
-      {tab === 'feed' && <Feed posts={posts} brand={brand} onOpen={setOpenPost} onAddExisting={addExisting} />}
+      {tab === 'feed' && <Feed posts={posts} brand={brand} handle={BRANDS[brand].handle} onEdit={setOpenPost} onAddExisting={addExisting} />}
 
       {tab === 'pipeline' && (
         <div className="card">
@@ -280,66 +261,6 @@ export default function Content() {
       )}
 
       {openPost && <PostModal postId={openPost} onClose={() => setOpenPost(null)} busy={busy} run={run} writeCarousel={writeCarousel} setErr={setErr} />}
-    </div>
-  );
-}
-
-function Feed({ posts, brand, onOpen, onAddExisting }) {
-  const { api, t, lang } = useStore();
-  const [dragId, setDragId] = useState(null);
-  const fileRef = useRef();
-  const sorted = [...posts].sort((a, b) => (b.postDate || '').localeCompare(a.postDate || '') || b.createdAt - a.createdAt);
-  const swap = (a, b) => {
-    if (!a || !b || a === b) return;
-    api.update((s) => {
-      const pa = s.content.posts.find((x) => x.id === a);
-      const pb = s.content.posts.find((x) => x.id === b);
-      for (const k of ['postDate', 'designDate', 'editDate']) [pa[k], pb[k]] = [pb[k], pa[k]];
-      for (const p of [pa, pb]) {
-        for (const e of s.events) {
-          if (e.postId !== p.id) continue;
-          e.date = e.postKind === 'post' ? p.postDate : e.postKind === 'design' ? p.designDate : p.editDate;
-          e.updatedAt = Date.now();
-        }
-      }
-      return s;
-    });
-  };
-  const today = todayStr();
-  return (
-    <div className="feed-wrap">
-      <div className="phone">
-        <div className="ig-head">
-          <div className="ig-avatar">{bname(brand, 'en')[0]}</div>
-          <div className="ig-stats">
-            <b>{BRANDS[brand].handle}</b>
-            <div className="muted small">{posts.length} posts · {posts.filter((p) => p.postDate > today).length} planned</div>
-          </div>
-        </div>
-        <div className="ig-grid">
-          {sorted.map((p, i) => (
-            <div key={p.id} className={`ig-tile${dragId === p.id ? ' dragging' : ''}`} draggable
-              onDragStart={() => setDragId(p.id)} onDragEnd={() => setDragId(null)}
-              onDragOver={(e) => e.preventDefault()} onDrop={() => { swap(dragId, p.id); setDragId(null); }}
-              onClick={() => onOpen(p.id)}>
-              {p.images?.length ? <ImgThumb k={p.images[0]} className="ig-img" /> : <TypoTile post={p} idx={i} brand={brand} />}
-              {p.postDate > today && <span className="ig-badge">{fmtDate(p.postDate, lang)}</span>}
-              {p.images?.length > 1 && <span className="ig-multi">❐</span>}
-            </div>
-          ))}
-          {sorted.length === 0 && <div className="ig-empty muted">{t('noPosts')}</div>}
-        </div>
-      </div>
-      <div className="feed-side card">
-        <h3>Feed preview</h3>
-        <p className="muted small">
-          {lang === 'en'
-            ? 'Newest and planned posts appear at the top, just like Instagram. Upload your Canva exports on each post to see the real design. Drag one tile onto another to swap their posting dates.'
-            : 'Postingan terbaru dan yang direncanakan muncul paling atas, seperti di Instagram. Upload hasil export Canva di setiap post untuk melihat desain aslinya. Seret satu kotak ke kotak lain untuk menukar tanggal postingnya.'}
-        </p>
-        <button className="btn full" onClick={() => fileRef.current.click()}><ImagePlus size={15} /> {lang === 'en' ? 'Add a post I already made' : 'Tambah post yang sudah ada'}</button>
-        <input ref={fileRef} type="file" accept="image/*" multiple hidden onChange={(e) => { const f = [...e.target.files]; if (f.length) onAddExisting(f, todayStr()); e.target.value = ''; }} />
-      </div>
     </div>
   );
 }
@@ -406,7 +327,7 @@ Reply with ONLY this JSON, no other text:
         <div className="post-left">
           <div className="viewer">
             {total ? <ImgThumb k={post.images[Math.min(view, total - 1)]} className="viewer-img" /> : (
-              c ? <div className="slide-preview"><div className="sp-num">{Math.min(view, c.slides.length - 1) + 1}/{c.slides.length}</div><h3>{c.slides[Math.min(view, c.slides.length - 1)].headline}</h3><p>{c.slides[Math.min(view, c.slides.length - 1)].body}</p></div>
+              c ? <SlideArt post={post} i={Math.min(view, c.slides.length - 1)} pal={palFor(post)} handle={BRANDS[post.brand]?.handle || 'elevara.agency'} />
                 : <div className="slide-preview"><Loader2 className="spin" /></div>
             )}
             <button className="nav l" onClick={() => setView((v) => Math.max(0, v - 1))}><ChevronLeft size={18} /></button>

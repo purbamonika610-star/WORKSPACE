@@ -89,7 +89,7 @@ function Tile({ post, idx, handle, onOpen, drag }) {
       onDragOver={(e) => e.preventDefault()} onDrop={() => { drag.swap(drag.dragId, post.id); drag.setDragId(null); }}
       onClick={() => onOpen(post.id, idx)}>
       {post.images?.length ? <Img k={post.images[0]} className="ig-img" /> : <SlideArt post={post} i={0} pal={pal} handle={handle} />}
-      {post.postDate > today && <span className="ig-badge">{fmtDate(post.postDate, lang)}</span>}
+      {post.postDate && <span className={`ig-badge${post.postDate <= today ? ' past' : ''}`}>{fmtDate(post.postDate, lang)}</span>}
       {multi && <span className="ig-multi"><svg viewBox="0 0 24 24" width="16" height="16"><path fill="#fff" d="M8 3h11a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm-4 4v12a2 2 0 0 0 2 2h12v-2H6V7H4Z" /></svg></span>}
       <div className="ig-hover"><Heart size={15} fill="#fff" /> {likesFor(post)} <MessageCircle size={15} fill="#fff" /> {Math.round(likesFor(post) / 9)}</div>
     </div>
@@ -114,8 +114,12 @@ export default function Feed({ posts, brand, handle, onEdit, onAddExisting }) {
   }, [full]);
   const fileRef = useRef();
   const prof = { ...DEFAULT_PROFILES[brand], ...(state.content.profiles?.[brand] || {}) };
-  const sorted = [...posts].sort((a, b) => (b.postDate || '').localeCompare(a.postDate || '') || b.createdAt - a.createdAt);
+  const months = [...new Set(posts.map((p) => (p.postDate || '').slice(0, 7)).filter(Boolean))].sort();
+  const [upTo, setUpTo] = useState(todayStr().slice(0, 7));
+  const inView = upTo === 'all' ? posts : posts.filter((p) => (p.postDate || '').slice(0, 7) <= upTo);
+  const sorted = [...inView].sort((a, b) => (b.postDate || '').localeCompare(a.postDate || '') || (b.postTime || '').localeCompare(a.postTime || '') || b.createdAt - a.createdAt);
   const shown = tab === 'grid' ? sorted : [];
+  const monthName = (m) => new Date(m + '-01T00:00').toLocaleDateString(en ? 'en-GB' : 'id-ID', { month: 'long', year: 'numeric' });
   const pillars = [...new Set(posts.map((p) => p.topic?.pillar).filter(Boolean))];
 
   const swap = (a, b) => {
@@ -156,7 +160,7 @@ export default function Feed({ posts, brand, handle, onEdit, onAddExisting }) {
             <div className="ig-right">
               <div className="ig-name">{prof.name} <span>| {prof.title}</span></div>
               <div className="ig-stats3">
-                <div><b>{posts.length}</b><span>Posts</span></div>
+                <div><b>{inView.length}</b><span>Posts</span></div>
                 <div><b>{prof.followers}</b><span>Followers</span></div>
                 <div><b>{prof.following}</b><span>Following</span></div>
               </div>
@@ -218,6 +222,12 @@ export default function Feed({ posts, brand, handle, onEdit, onAddExisting }) {
             ? 'This is how your profile will look. Tap a post to see it like on Instagram: swipe through every slide and read the caption. Drag one tile onto another to swap their posting dates. Upload your Canva exports on a post to replace the preview with your real design.'
             : 'Begini tampilan profilmu nanti. Klik satu post untuk melihatnya seperti di Instagram: geser tiap slide dan baca caption-nya. Seret satu kotak ke kotak lain untuk menukar tanggal posting. Upload hasil export Canva di post itu supaya preview diganti desain aslimu.'}
         </p>
+        <label className="lbl">{en ? 'Show the feed up to' : 'Tampilkan feed sampai'}</label>
+        <div className="seg full month-seg">
+          {[...new Set([todayStr().slice(0, 7), ...months])].sort().map((m) => <button key={m} className={upTo === m ? 'on' : ''} onClick={() => setUpTo(m)}>{monthName(m)}</button>)}
+          <button className={upTo === 'all' ? 'on' : ''} onClick={() => setUpTo('all')}>{en ? 'All' : 'Semua'}</button>
+        </div>
+        <p className="muted small" style={{ margin: 0 }}>{en ? 'Posts are ordered by posting date: the newest is top-left, like on Instagram.' : 'Post diurutkan sesuai tanggal posting: yang terbaru di kiri atas, seperti di Instagram.'} {upTo !== 'all' && `${inView.length} post ${en ? 'until the end of' : 'sampai akhir'} ${monthName(upTo)}.`}</p>
         <button className="btn full primary" onClick={() => setFull(true)}><Maximize2 size={15} /> {en ? 'View full screen' : 'Lihat layar penuh'}</button>
         <button className="btn full" onClick={() => setEditing(true)}><Pencil size={15} /> {en ? 'Edit profile' : 'Edit profil'}</button>
         <button className="btn full" onClick={() => fileRef.current.click()}><ImagePlus size={15} /> {en ? 'Add a post I already made' : 'Tambah post yang sudah ada'}</button>

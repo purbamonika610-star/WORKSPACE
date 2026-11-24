@@ -707,3 +707,6 @@ main { background: #fff; }
 .ig-img.fit { object-fit: contain; background: #fff; }
 .igp-media:has(.ig-img.fit) { background: #fff; }
 .igp-media:has(.ig-img.fit) { width: 100%; max-height: calc(var(--ph) - 130px); }
+.ig-badge.past { background: rgba(17,17,17,.72); color: #fff; }
+.month-seg { flex-wrap: wrap; }
+.month-seg button { flex: 1 1 auto; }

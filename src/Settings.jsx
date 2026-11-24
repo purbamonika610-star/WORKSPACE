@@ -1,11 +1,59 @@
 import { useRef, useState } from 'react';
-import { Download, Upload, RotateCcw, CalendarCheck, Sparkles, Globe, Megaphone, Bell } from 'lucide-react';
+import { Download, Upload, RotateCcw, CalendarCheck, Sparkles, Globe, Megaphone, Bell, Smartphone, Copy, Link2 } from 'lucide-react';
 import { initialState, useStore } from './store.jsx';
 import { DEFAULT_STRATEGIES } from './seed.js';
 
 const DAYS = { en: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], id: ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'] };
 
-export default function Settings({ google }) {
+function CloudCard({ cloud, lang }) {
+  const en = lang === 'en';
+  const [code, setCode] = useState('');
+  const [show, setShow] = useState(false);
+  const [copied, setCopied] = useState('');
+  const copy = async (txt, what) => { try { await navigator.clipboard.writeText(txt); setCopied(what); setTimeout(() => setCopied(''), 1800); } catch { /* */ } };
+  const c = cloud.cfg;
+  const link = c ? `${window.location.origin}${window.location.pathname}#sync=${c.code}` : '';
+  const when = cloud.info?.at ? new Date(cloud.info.at).toLocaleString(en ? 'en-GB' : 'id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '';
+  return (
+    <section className="card">
+      <h2><Smartphone size={17} /> {en ? 'Sync across devices' : 'Sinkron antar device'}</h2>
+      {!c ? (
+        <>
+          <p className="muted small">{en
+            ? 'Turn this on and every change is saved to the cloud automatically, so your laptop, phone and other devices always show the same workspace.'
+            : 'Aktifkan ini, maka setiap perubahan otomatis tersimpan ke cloud. Laptop, HP, dan device lain akan selalu menampilkan workspace yang sama.'}</p>
+          <button className="btn black" onClick={cloud.enable}><Smartphone size={15} /> {en ? 'Turn on sync (use this device’s data)' : 'Aktifkan sinkron (pakai data device ini)'}</button>
+          <label className="lbl" style={{ marginTop: 16 }}>{en ? 'Already turned on elsewhere? Paste your sync code' : 'Sudah aktif di device lain? Tempel kode sinkronmu'}</label>
+          <div className="row-gap">
+            <input className="grow" value={code} onChange={(e) => setCode(e.target.value)} placeholder="mw-xxxxxx-xxxxxx-…" />
+            <button className="btn" onClick={async () => { if (window.confirm(en ? 'The data on this device will be replaced by your cloud workspace. Continue?' : 'Data di device ini akan diganti dengan workspace dari cloud. Lanjut?')) { if (await cloud.join(code)) setCode(''); } }}>{en ? 'Connect' : 'Sambungkan'}</button>
+          </div>
+        </>
+      ) : (
+        <>
+          <p className="small" style={{ margin: '0 0 6px' }}><b>{cloud.status === 'error' ? (en ? '⚠️ Could not reach the cloud. Your changes are kept and will upload when you are back online.' : '⚠️ Tidak bisa terhubung ke cloud. Perubahanmu aman dan akan diupload saat online lagi.') : (en ? '✓ Sync is on. Changes upload automatically.' : '✓ Sinkron aktif. Perubahan otomatis terupload.')}</b></p>
+          {when && <p className="muted tiny" style={{ margin: '0 0 10px' }}>{en ? 'Last saved' : 'Terakhir tersimpan'}: {when}{cloud.info?.device && cloud.info.device !== 'this' ? ` · ${cloud.info.device}` : ''}</p>}
+          <label className="lbl">{en ? 'Open on another device' : 'Buka di device lain'}</label>
+          <p className="muted small" style={{ marginTop: 0 }}>{en ? 'Send this link to yourself (e.g. WhatsApp to yourself) and open it on the other device. Keep it private: it works like a password.' : 'Kirim link ini ke dirimu sendiri (misalnya WhatsApp ke nomor sendiri), lalu buka di device lain. Jangan dibagikan ke orang lain, karena fungsinya seperti password.'}</p>
+          <div className="row-gap" style={{ flexWrap: 'wrap' }}>
+            <button className="btn black" onClick={() => copy(link, 'link')}><Link2 size={15} /> {copied === 'link' ? (en ? 'Copied!' : 'Tersalin!') : (en ? 'Copy device link' : 'Salin link device')}</button>
+            <button className="btn" onClick={() => copy(c.code, 'code')}><Copy size={15} /> {copied === 'code' ? (en ? 'Copied!' : 'Tersalin!') : (en ? 'Copy code' : 'Salin kode')}</button>
+            <button className="btn ghost" onClick={() => setShow(!show)}>{show ? (en ? 'Hide code' : 'Sembunyikan') : (en ? 'Show code' : 'Lihat kode')}</button>
+          </div>
+          {show && <p className="small" style={{ fontFamily: 'monospace', wordBreak: 'break-all', background: '#F6F7FA', padding: 10, borderRadius: 10 }}>{c.code}</p>}
+          <p className="muted tiny">{en ? 'Your Anthropic API key and uploaded Canva images stay on each device and are not uploaded.' : 'API key Anthropic dan gambar Canva yang kamu upload tetap di masing-masing device dan tidak ikut diupload.'}</p>
+          <div className="row-gap">
+            <button className="btn" onClick={cloud.syncNow}>{en ? 'Sync now' : 'Sinkron sekarang'}</button>
+            <button className="btn ghost danger" onClick={() => window.confirm(en ? 'Stop syncing on this device? Your data stays here and in the cloud.' : 'Hentikan sinkron di device ini? Datamu tetap ada di sini dan di cloud.') && cloud.disconnect()}>{en ? 'Stop syncing on this device' : 'Hentikan sinkron di device ini'}</button>
+          </div>
+        </>
+      )}
+      {cloud.error && <p className="small" style={{ color: '#C2397F' }}>{cloud.error}</p>}
+    </section>
+  );
+}
+
+export default function Settings({ google, cloud }) {
   const { state, api, t, lang } = useStore();
   const s = state.settings;
   const [brand, setBrand] = useState('elevara');
@@ -38,6 +86,8 @@ export default function Settings({ google }) {
           <button className={lang === 'en' ? 'on' : ''} onClick={() => api.setLang('en')}>🇬🇧 English</button>
         </div>
       </section>
+
+      {cloud && <CloudCard cloud={cloud} lang={lang} />}
 
       <section className="card">
         <h2><CalendarCheck size={17} /> {t('googleSection')}</h2>

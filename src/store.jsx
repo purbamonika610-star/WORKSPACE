@@ -27,14 +27,16 @@ export function initialState() {
   };
 }
 
+// Fill in missing fields and run one-time migrations on saved data (from this browser or from the cloud).
+export function hydrate(s) {
+  const base = initialState();
+  return migrate({ ...base, ...s, migrations: [...(s.migrations || [])], settings: { ...base.settings, ...s.settings }, content: { ...base.content, ...s.content } });
+}
+
 function load() {
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) {
-      const s = JSON.parse(raw);
-      const base = initialState();
-      return migrate({ ...base, ...s, migrations: s.migrations || [], settings: { ...base.settings, ...s.settings }, content: { ...base.content, ...s.content } });
-    }
+    if (raw) return hydrate(JSON.parse(raw));
   } catch { /* ignore */ }
   return initialState();
 }

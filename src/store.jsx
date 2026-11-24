@@ -3,6 +3,8 @@ import { COMPANY_SUBS, buildInterviewTasks, buildSeedProjects, buildThesisProjec
 import { makeT, tx } from './i18n.js';
 
 const KEY = 'monika-workspace-v1';
+// Google OAuth Client ID (public identifier, not a secret).
+export const GOOGLE_CLIENT_ID = '678605435644-iaoe6egkbv4171ivp7d7ji05f9jugifv.apps.googleusercontent.com';
 
 export function initialState() {
   return {
@@ -16,7 +18,7 @@ export function initialState() {
     deletedGcal: [],
     content: { brand: 'elevara', ideas: [], rejected: [], posts: [], trends: {}, metrics: [] },
     settings: {
-      googleClientId: '',
+      googleClientId: GOOGLE_CLIENT_ID,
       anthropicKey: '',
       strategies: { ...DEFAULT_STRATEGIES },
       postingDays: [1, 3, 5],
@@ -79,6 +81,7 @@ function migrate(st) {
     }
     st.migrations.push('company-research');
   }
+  if (!st.settings.googleClientId) st.settings.googleClientId = GOOGLE_CLIENT_ID;
   return st;
 }
 

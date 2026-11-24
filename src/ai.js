@@ -114,11 +114,22 @@ Then write the full caption (hook line, value, CTA), a list of 5–8 hashtags (w
 
 const PLAN5 = ['Read the 5-slide script and adjust any words to your voice (10 min)', 'Design the 5 slides manually in Canva (45–60 min)', 'Review the caption & hashtags the day before', 'Post at your usual time and reply to every comment in the first hour', 'Share slide 1 to Stories with a poll or question sticker'];
 
-export function templateTopics({ brand, count, avoid }) {
-  const used = new Set(avoid.map((x) => x.toLowerCase()));
+export function templateTopics({ brand, count, avoid, hard = [], rejected = [] }) {
+  const low = (x) => x.toLowerCase();
   const lib = Object.values(LIBRARY[brand] || LIBRARY.elevara);
-  const pool = lib.filter((x) => !used.has(x.title.toLowerCase()));
-  const list = (pool.length ? pool : lib).slice().sort(() => Math.random() - 0.5).slice(0, count);
+  const shown = new Set(hard.map(low));
+  const seen = new Set(avoid.map(low));
+  const shuffle = (a) => a.slice().sort(() => Math.random() - 0.5);
+  // 1) topics never shown before
+  let list = shuffle(lib.filter((x) => !seen.has(low(x.title)))).slice(0, count);
+  // 2) not enough left: bring back the topics you skipped longest ago (never the ones on screen or already in your plan)
+  if (list.length < count) {
+    const order = new Map(rejected.map((t, i) => [low(t), i]));
+    const back = lib
+      .filter((x) => !shown.has(low(x.title)) && !list.includes(x))
+      .sort((a, b) => (order.get(low(a.title)) ?? -1) - (order.get(low(b.title)) ?? -1));
+    list = [...list, ...back.slice(0, count - list.length)];
+  }
   return list.map((x) => ({
     title: x.title, hook: x.hook, pillar: x.pillar,
     why: `Problem it solves: ${x.problem}`,

@@ -116,9 +116,9 @@ export default function Content() {
     setErr('');
     try {
       const s = api.get();
-      const opts = { apiKey: s.settings.anthropicKey, strategy: s.settings.strategies[brand], lang: s.settings.contentLang, count, avoid: avoidList(), feedback: fb, brand };
+      const hard = [...s.content.ideas.map((i) => i.title), ...s.content.posts.map((p) => p.topic.title)];
+      const opts = { apiKey: s.settings.anthropicKey, strategy: s.settings.strategies[brand], lang: s.settings.contentLang, count, avoid: avoidList(), hard, rejected: s.content.rejected, feedback: fb, brand };
       let list = s.settings.anthropicKey ? await aiTopics(opts) : templateTopics(opts);
-      if (!list.length) list = templateTopics({ ...opts, avoid: [] });
       api.update((st) => { st.content.ideas.push(...list.map((x) => ({ ...x, id: uid('i'), brand }))); return st; });
     } catch (e) { setErr(e.message || String(e)); }
   });

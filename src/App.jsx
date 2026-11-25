@@ -9,6 +9,7 @@ import { AllProjects, ProjectView, TaskDrawer } from './Project.jsx';
 import CalendarView from './Calendar.jsx';
 import Content from './Content.jsx';
 import Settings from './Settings.jsx';
+import Lock from './Lock.jsx';
 import { clearToken, getToken, hasDirty, requestToken, syncGoogle, wasConnected } from './google.js';
 
 function useGoogle() {
@@ -257,8 +258,8 @@ function Shell() {
   ];
 
   let page;
-  if (view.startsWith('project:')) page = <ProjectView projectId={view.slice(8)} openTask={setTask} />;
-  else if (view === 'projects') page = <AllProjects go={go} />;
+  if (view.startsWith('project:')) page = <Lock><ProjectView projectId={view.slice(8)} openTask={setTask} /></Lock>;
+  else if (view === 'projects') page = <Lock><AllProjects go={go} /></Lock>;
   else if (view === 'calendar') page = <CalendarView key={calTarget?.k || 'cal'} openTask={setTask} target={calTarget} clearTarget={() => setCalTarget(null)} />;
   else if (view === 'content') page = <Content />;
   else if (view === 'settings') page = <Settings google={google} cloud={cloud} />;

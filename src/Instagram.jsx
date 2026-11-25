@@ -32,6 +32,7 @@ export function useIg() {
 }
 
 // Turn an uploaded image into an Instagram-safe JPEG (1080 wide, ratio between 4:5 and 1.91:1).
+// Taller than 4:5 is cropped (no side bars); wider than 1.91:1 is padded.
 async function toJpeg(blob) {
   const bmp = await createImageBitmap(blob);
   const W = 1080;
@@ -45,18 +46,22 @@ async function toJpeg(blob) {
   probe.getContext('2d').drawImage(bmp, 0, 0, 1, 1, 0, 0, 1, 1);
   const [pr, pg, pb] = probe.getContext('2d').getImageData(0, 0, 1, 1).data;
   x.fillStyle = `rgb(${pr},${pg},${pb})`; x.fillRect(0, 0, W, H);
-  const s = Math.min(W / bmp.width, H / bmp.height);
+  // Too tall (e.g. 3:4) → crop top/bottom to 4:5 instead of padding the sides.
+  const s = r < target ? Math.max(W / bmp.width, H / bmp.height) : Math.min(W / bmp.width, H / bmp.height);
   const w = bmp.width * s, h = bmp.height * s;
   x.drawImage(bmp, (W - w) / 2, (H - h) / 2, w, h);
   return new Promise((res) => c.toBlob(res, 'image/jpeg', 0.92));
 }
 
+// '|crop45' marks slides made with crop-to-4:5; older padded uploads get redone.
+const igSigOf = (post) => (post.images || []).join(',') + '|crop45';
+
 const busyPosts = new Set();
 /** Upload a Ready post's slides so the server can publish them. Returns true when done. */
 export async function prepareForIg(post, update) {
   const code = getCfg()?.code;
-  const sig = (post.images || []).join(',');
-  if (!code || !sig || post.igSig === sig || busyPosts.has(post.id)) return false;
+  const sig = igSigOf(post);
+  if (!code || !post.images?.length || post.igSig === sig || busyPosts.has(post.id)) return false;
   busyPosts.add(post.id);
   try {
     const urls = [];
@@ -78,7 +83,7 @@ export function useIgAutoPrepare(posts, api) {
   const key = posts.filter((p) => p.status === 'ready').map((p) => p.id + (p.images || []).join(',') + (p.igSig || '')).join('|');
   useEffect(() => {
     if (!getCfg()?.code) return;
-    posts.filter((p) => p.status === 'ready' && p.images?.length && p.igSig !== p.images.join(',')).forEach((p) => prepareForIg(p, api.update).catch(() => {}));
+    posts.filter((p) => p.status === 'ready' && p.images?.length && p.igSig !== igSigOf(p)).forEach((p) => prepareForIg(p, api.update).catch(() => {}));
   }, [ig.loading, key]); // eslint-disable-line react-hooks/exhaustive-deps
 }
 
@@ -101,7 +106,7 @@ export function IgPostStatus({ post, lang }) {
   const when = `${fmtDate(post.postDate, lang, { weekday: 'short', day: 'numeric', month: 'short' })} ${post.postTime || ''}`;
   if (post.status !== 'ready') return <div className="ig-st muted"><Send size={14} /> {en ? `Mark it Ready (with your slides uploaded) to auto-post on ${when}.` : `Tandai Ready (dan upload slide-nya) supaya otomatis terbit ${when}.`}</div>;
   if (!post.images?.length) return <div className="ig-st bad"><TriangleAlert size={14} /> {en ? 'Upload your Canva slides first, otherwise nothing can be posted.' : 'Upload slide Canva-nya dulu, kalau tidak ada gambar post tidak bisa terbit.'}</div>;
-  if (post.igSig !== post.images.join(',')) return <div className="ig-st"><Loader2 size={14} className="spin" /> {en ? 'Preparing slides for Instagram…' : 'Menyiapkan slide untuk Instagram…'}</div>;
+  if (post.igSig !== igSigOf(post)) return <div className="ig-st"><Loader2 size={14} className="spin" /> {en ? 'Preparing slides for Instagram…' : 'Menyiapkan slide untuk Instagram…'}</div>;
   return <div className="ig-st ok"><Send size={14} /> {en ? `Slides ready. Claude will schedule it on @${ACCOUNT} for ${when}` : `Slide siap. Claude akan menjadwalkannya di @${ACCOUNT} · ${when}`}</div>;
 }
 

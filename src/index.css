@@ -704,9 +704,10 @@ main { background: #fff; }
 .feed-wrap.full .ig-status { display: flex; }
 .phone-close { position: fixed; z-index: 62; top: 16px; right: 16px; display: inline-flex; align-items: center; gap: 6px; background: #fff; border: 0; border-radius: 99px; padding: 8px 14px; font-weight: 600; font-size: 13px; cursor: pointer; box-shadow: var(--shadow); }
 
-.ig-img.fit { object-fit: contain; background: #fff; }
-.igp-media:has(.ig-img.fit) { background: #fff; }
-.igp-media:has(.ig-img.fit) { width: 100%; max-height: calc(var(--ph) - 130px); }
+/* Uploaded designs fill the full post width at their own ratio, like Instagram: no side bars.
+   The box takes the first slide's ratio (clamped to Instagram's 3:4 to 1.91:1); other slides fill it. */
+.ig-img.fit { object-fit: cover; background: #fff; }
+.igp-media:has(.ig-img.fit) { background: #fff; width: 100%; }
 .ig-badge.past { background: rgba(17,17,17,.72); color: #fff; }
 .month-seg { flex-wrap: wrap; }
 .month-seg button { flex: 1 1 auto; }
